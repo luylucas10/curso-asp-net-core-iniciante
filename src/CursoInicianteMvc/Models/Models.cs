@@ -15,7 +15,6 @@ public class Tarefa
     public Guid Id { get; set; }
     public Guid PessoaId { get; set; }
     public required string Descricao { get; set; }
-    
     public DateTime? RealizadoEm { get; set; }
 
     public Pessoa Pessoa { get; set; }

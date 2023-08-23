@@ -1,4 +1,4 @@
-@model CursoInicianteMvc.Models.Tarefa
+@model CursoInicianteMvc.Models.TarefaEditarViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -26,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="RealizadoEm" class="control-label"></label>
-                <input asp-for="RealizadoEm" class="form-control" />
+                <input asp-for="RealizadoEm" class="form-control" type="date" />
                 <span asp-validation-for="RealizadoEm" class="text-danger"></span>
             </div>
             <div class="form-group">

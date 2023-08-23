@@ -57,12 +57,17 @@ namespace CursoInicianteMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PessoaId,Descricao,RealizadoEm")] Tarefa tarefa)
+        public async Task<IActionResult> Create([Bind("PessoaId,Descricao,RealizadoEm")] TarefaViewModel tarefa)
         {
             if (ModelState.IsValid)
             {
-                tarefa.Id = Guid.NewGuid();
-                _context.Add(tarefa);
+                var tarefaEntidade = new Tarefa
+                {
+                    PessoaId = tarefa.PessoaId,
+                    Descricao = tarefa.Descricao
+                };
+
+                _context.Add(tarefaEntidade);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -86,7 +91,14 @@ namespace CursoInicianteMvc.Controllers
             }
 
             ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", "Id", tarefa.PessoaId);
-            return View(tarefa);
+
+            return View(new TarefaEditarViewModel
+            {
+                Descricao = tarefa.Descricao,
+                PessoaId = tarefa.PessoaId,
+                Id = tarefa.Id,
+                RealizadoEm = tarefa.RealizadoEm
+            });
         }
 
         // POST: Tarefa/Edit/5
@@ -94,7 +106,9 @@ namespace CursoInicianteMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,PessoaId,Descricao,RealizadoEm")] Tarefa tarefa)
+        public async Task<IActionResult> Edit(Guid id,
+            [Bind("Id,PessoaId,Descricao,RealizadoEm")]
+            TarefaEditarViewModel tarefa)
         {
             if (id != tarefa.Id)
             {
@@ -105,19 +119,17 @@ namespace CursoInicianteMvc.Controllers
             {
                 try
                 {
-                    _context.Update(tarefa);
+                    var entidade = await _context.Tarefa.FindAsync(id);
+                    entidade.Descricao = tarefa.Descricao;
+                    entidade.RealizadoEm = tarefa.RealizadoEm;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!TarefaExists(tarefa.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));
