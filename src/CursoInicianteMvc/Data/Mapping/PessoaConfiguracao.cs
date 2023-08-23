@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CursoInicianteMvc.Data.Mapping;
 
-public class PessoaConfiguracao : IEntityTypeConfiguration<Pessoa> 
+public class PessoaConfiguracao : IEntityTypeConfiguration<Pessoa>
 {
     public void Configure(EntityTypeBuilder<Pessoa> builder)
     {
@@ -14,5 +14,25 @@ public class PessoaConfiguracao : IEntityTypeConfiguration<Pessoa>
         builder.Property(x => x.Nome).HasMaxLength(100);
         builder.Property(x => x.Email).HasMaxLength(100);
         builder.Property(x => x.Celular).HasMaxLength(11);
+
+        builder.HasMany(x => x.Tarefas)
+            .WithOne(x => x.Pessoa)
+            .HasPrincipalKey(x => x.Id)
+            .HasForeignKey(x => x.PessoaId);
+    }
+}
+
+public class TarefaConfiguracao : IEntityTypeConfiguration<Tarefa>
+{
+    public void Configure(EntityTypeBuilder<Tarefa> builder)
+    {
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Descricao).HasMaxLength(200);
+
+        builder.HasOne(x => x.Pessoa)
+            .WithMany(x => x.Tarefas)
+            .HasPrincipalKey(x => x.Id)
+            .HasForeignKey(x => x.PessoaId);
     }
 }

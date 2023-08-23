@@ -1,4 +1,4 @@
-﻿using CursoInicianteMvc.Data.Mapping;
+using CursoInicianteMvc.Data.Mapping;
 using CursoInicianteMvc.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,5 +16,8 @@ public class CursoInicianteContexto : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new PessoaConfiguracao());
+        modelBuilder.ApplyConfiguration(new TarefaConfiguracao());
     }
+
+    public DbSet<CursoInicianteMvc.Models.Tarefa> Tarefa { get; set; } = default!;
 }
