@@ -1,21 +1,31 @@
 ﻿using System.Diagnostics;
+using CursoInicianteMvc.Data;
 using Microsoft.AspNetCore.Mvc;
 using CursoInicianteMvc.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CursoInicianteMvc.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly CursoInicianteContexto _contexto;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, CursoInicianteContexto contexto)
     {
         _logger = logger;
+        _contexto = contexto;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var inicio = new InicioViewModel()
+        {
+            QuantidadePessoas = await _contexto.Pessoa.CountAsync(),
+            QuantidadeTarafas = await _contexto.Tarefa.CountAsync()
+        };
+        
+        return View(inicio);
     }
 
     public IActionResult Privacy()

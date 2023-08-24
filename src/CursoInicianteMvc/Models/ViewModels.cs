@@ -21,3 +21,9 @@ public record TarefaEditarViewModel
     public required string Descricao { get; set; }
     public DateTime? RealizadoEm { get; set; }
 }
+
+public record InicioViewModel
+{
+    public int QuantidadePessoas { get; set; }
+    public int QuantidadeTarafas { get; set; }
+}
