@@ -48,7 +48,7 @@ namespace CursoInicianteMvc.Controllers
         // GET: Tarefa/Create
         public IActionResult Create()
         {
-            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", "Id");
+            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome));
             return View();
         }
 
@@ -72,7 +72,7 @@ namespace CursoInicianteMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", "Id", tarefa.PessoaId);
+            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome), tarefa.PessoaId);
             return View(tarefa);
         }
 
@@ -90,7 +90,7 @@ namespace CursoInicianteMvc.Controllers
                 return NotFound();
             }
 
-            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", "Id", tarefa.PessoaId);
+            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome), tarefa.PessoaId);
 
             return View(new TarefaEditarViewModel
             {
@@ -107,8 +107,7 @@ namespace CursoInicianteMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id,
-            [Bind("Id,PessoaId,Descricao,RealizadoEm")]
-            TarefaEditarViewModel tarefa)
+            [Bind("Id,PessoaId,Descricao,RealizadoEm")] TarefaEditarViewModel tarefa)
         {
             if (id != tarefa.Id)
             {
@@ -135,7 +134,7 @@ namespace CursoInicianteMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", "Id", tarefa.PessoaId);
+            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome), tarefa.PessoaId);
             return View(tarefa);
         }
 

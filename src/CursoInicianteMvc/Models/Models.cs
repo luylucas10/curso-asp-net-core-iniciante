@@ -7,7 +7,7 @@ public class Pessoa
     public required string Email { get; set; }
     public string? Celular { get; set; }
 
-    public ICollection<Tarefa> Tarefas { get; set; }
+    public ICollection<Tarefa> Tarefas { get; set; } = new List<Tarefa>();
 }
 
 public class Tarefa
