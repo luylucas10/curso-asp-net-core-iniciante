@@ -1,8 +1,8 @@
 @model IEnumerable<CursoInicianteMvc.Models.Pessoa>
 
 @{
-    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Index";
 }
 
 @section Breadcumb
@@ -14,49 +14,38 @@
             </li>
             <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Pessoas</li>
         </ol>
-        <h6 class="font-weight-bolder mb-0">Pessoas</h6>
+        @* <h6 class="font-weight-bolder mb-0">Pessoas</h6> *@
     </nav>
 }
 
-<h1>Pessoas</h1>
+<div class="row">
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title d-flex">
+                <div>
+                    <h4>Pessoas</h4>
+                </div>
+                <div class="ms-auto">
+                    <a asp-action="Create" class="btn btn-info">Nova</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <table
+                class="table"
+                data-toggle="table"
+                data-url="@Url.Action("Search")"
+                data-pagination="true"
+                data-side-pagination="server"
+                data-locale="pt-BR">
+                    <thead>
+                        <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
+                        <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
+                        <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
+                        <th data-title="#" data-field="id"></th>
+                    </thead>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Nome)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Email)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Celular)
-        </th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Celular)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+            </table>
+        </div>
+    </div>
+</div>

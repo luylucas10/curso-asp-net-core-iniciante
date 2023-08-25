@@ -20,11 +20,32 @@ namespace CursoInicianteMvc.Controllers
         }
 
         // GET: Pessoa
-        public async Task<IActionResult> Index()
+        public ViewResult Index() => View();
+
+        public async Task<JsonResult> Search(int? limit, int? offset, string? search, string? sort, string? order)
         {
-            return _context.Pessoa != null
-                ? View(await _context.Pessoa.ToListAsync())
-                : Problem("Entity set 'CursoInicianteContexto.Pessoa'  is null.");
+            limit = limit.GetValueOrDefault(0) <= 0 ? 0 : limit - 1;
+            offset = offset.GetValueOrDefault(0) <= 0 ? 15 : offset;
+
+            var consulta = _context.Pessoa.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                consulta = consulta.Where(x =>
+                    x.Nome.Contains(search) || x.Email.Contains(search) || x.Celular.Contains(search));
+
+            var total = await consulta.CountAsync();
+
+            
+            if (sort == "Nome" && order == "desc") consulta = consulta.OrderByDescending(x => x.Nome);
+            else if (sort == "Email" && order == "asc") consulta = consulta.OrderBy(x => x.Email);
+            else if (sort == "Email" && order == "desc") consulta = consulta.OrderByDescending(x => x.Email);
+            else if (sort == "Celular" && order == "asc") consulta = consulta.OrderBy(x => x.Celular);
+            else if (sort == "Celular" && order == "desc") consulta = consulta.OrderByDescending(x => x.Celular);
+            else consulta = consulta.OrderBy(x => x.Nome);
+
+            var rows = await consulta.ToListAsync();
+            
+            return new JsonResult(new { rows, total });
         }
 
         // GET: Pessoa/Details/5
