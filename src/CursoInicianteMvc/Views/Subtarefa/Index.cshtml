@@ -1,0 +1,62 @@
+@model IEnumerable<CursoInicianteMvc.Models.Subtarefa>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Breadcumb
+{
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            <li class="breadcrumb-item text-sm">
+                <a class="opacity-5 text-dark" asp-controller="Home" asp-action="Index">Início</a>
+            </li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Tarefas</li>
+        </ol>
+        <h6 class="font-weight-bolder mb-0">Tarefas</h6>
+    </nav>
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Descricao)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RealizadoEm)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tarefa)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descricao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RealizadoEm)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tarefa.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

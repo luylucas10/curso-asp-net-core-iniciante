@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CursoInicianteMvc.Data.Mapping;
+namespace CursoInicianteMvc.Data;
 
 public class PessoaConfiguracao : IEntityTypeConfiguration<Pessoa>
 {
@@ -28,11 +28,35 @@ public class TarefaConfiguracao : IEntityTypeConfiguration<Tarefa>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).HasDefaultValueSql("newid()");
+
         builder.Property(x => x.Descricao).HasMaxLength(200);
 
         builder.HasOne(x => x.Pessoa)
             .WithMany(x => x.Tarefas)
             .HasPrincipalKey(x => x.Id)
             .HasForeignKey(x => x.PessoaId);
+
+        builder
+            .HasMany(x => x.Subtarefas)
+            .WithOne(x => x.Tarefa)
+            .HasPrincipalKey(x => x.Id)
+            .HasForeignKey(x => x.TarefaId);
+    }
+}
+
+public class SubtarefaConfiguracao : IEntityTypeConfiguration<Subtarefa>
+{
+    public void Configure(EntityTypeBuilder<Subtarefa> builder)
+    {
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Id).HasDefaultValueSql("newid()");
+        builder.Property(x => x.Descricao).HasMaxLength(200);
+
+        builder.HasOne(x => x.Tarefa)
+            .WithMany(x => x.Subtarefas)
+            .HasPrincipalKey(x => x.Id)
+            .HasForeignKey(x => x.TarefaId);
     }
 }

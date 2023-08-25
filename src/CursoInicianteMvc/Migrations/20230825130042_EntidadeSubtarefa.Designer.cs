@@ -4,6 +4,7 @@ using CursoInicianteMvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CursoInicianteMvc.Migrations
 {
     [DbContext(typeof(CursoInicianteContexto))]
-    partial class CursoInicianteContextoModelSnapshot : ModelSnapshot
+    [Migration("20230825130042_EntidadeSubtarefa")]
+    partial class EntidadeSubtarefa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
