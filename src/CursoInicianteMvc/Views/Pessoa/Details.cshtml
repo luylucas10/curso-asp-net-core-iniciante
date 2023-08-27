@@ -5,34 +5,40 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="row">
+    <div class="card">
+        <div class="card-header d-flex py-3">
+            <div class="card-title"><h4>Detalhes: @Model.Nome</h4></div>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="ms-auto btn btn-primary">Edit</a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Nome" class="form-label"></label>
+                        <input asp-for="Nome" class="form-control-plaintext" readonly="readonly"/>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control-plaintext" readonly="readonly"/>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Celular" class="form-label"></label>
+                        <input asp-for="Celular" class="form-control-plaintext" readonly="readonly"/>
+                    </div>
+                </div>
+            </div>
 
-<h1>Details</h1>
-
-<div>
-    <h4>Pessoa</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Celular)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Celular)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        </div>
+        <div class="card-body">
+            <h5>TAREFAS VÃO AQUI</h5>
+        </div>
+        <div class="card-footer">
+            <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </div>
+    </div>
 </div>

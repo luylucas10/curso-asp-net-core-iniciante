@@ -17,14 +17,20 @@
     <script>
     function btnAcoes(value, row){
         const urlEditar = $("input#url-editar").val();
+        const urlDetalhes = $("input#url-detalhes").val();
+        const urlExcluir = $("input#url-excluir").val();
         return `
-            <a href="${urlEditar.concat("/").concat(value)}" class="btn btn-primary">Editar</a>
+            <a href="${urlDetalhes.concat("/").concat(value)}" class="btn btn-primary">Detalhes</a>
+            <a href="${urlEditar.concat("/").concat(value)}" class="btn btn-info">Editar</a>
+            <a href="${urlExcluir.concat("/").concat(value)}" class="btn btn-danger">Excluir</a>
 ` 
     }
     </script>
 }
 
 <input type="hidden" id="url-editar" value="@Url.Action("Edit")">
+<input type="hidden" id="url-detalhes" value="@Url.Action("Details")">
+<input type="hidden" id="url-excluir" value="@Url.Action("Delete")">
 
 <div class="row">
     <div class="card">
@@ -45,10 +51,10 @@
                 data-side-pagination="server"
                 data-locale="pt-BR">
                 <thead>
-                <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
-                <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
-                <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
-                <th data-title="#" data-field="id" data-formatter="btnAcoes"></th>
+                    <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
+                    <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
+                    <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
+                    <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
                 </thead>
             </table>
         </div>

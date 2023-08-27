@@ -134,7 +134,7 @@ namespace CursoInicianteMvc.Controllers
                 return NotFound();
             }
 
-            return View(pessoa);
+            return View(new PessoaEditarViewModel(pessoa.Id, pessoa.Nome, pessoa.Email, pessoa.Celular));
         }
 
         // POST: Pessoa/Delete/5
