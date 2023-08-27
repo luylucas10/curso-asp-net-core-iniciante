@@ -15,10 +15,15 @@ namespace CursoInicianteMvc.Controllers
 
         public async Task<JsonResult> Search(int? limit, int? offset, string? search, string? sort, string? order)
         {
-            limit = limit.GetValueOrDefault(0) <= 0 ? 0 : limit - 1;
-            offset = offset.GetValueOrDefault(0) <= 0 ? 15 : offset;
+            limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
+            offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
+            
 
-            var consulta = _context.Pessoa.AsNoTracking();
+            var consulta = _context
+                .Pessoa
+                .Include(x => x.Tarefas)
+                .AsQueryable()
+                .AsNoTracking();
 
             if (!string.IsNullOrWhiteSpace(search))
                 consulta = consulta.Where(x =>
@@ -38,7 +43,16 @@ namespace CursoInicianteMvc.Controllers
                 _ => consulta.OrderBy(x => x.Nome)
             };
 
-            var rows = await consulta.ToListAsync();
+            var rows = await consulta
+                .Select(x => new
+                {
+                    x.Id, x.Nome, x.Email, x.Celular,
+                    qntTarefas = x.Tarefas.Count,
+                    qntSubtarefas = x.Tarefas.SelectMany(x => x.Subtarefas).Count()
+                })
+                .Skip(offset.GetValueOrDefault())
+                .Take(limit.GetValueOrDefault())
+                .ToListAsync();
 
             return new JsonResult(new { rows, total });
         }

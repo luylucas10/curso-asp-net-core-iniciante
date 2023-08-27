@@ -14,10 +14,7 @@ namespace CursoInicianteMvc.Controllers
     {
         private readonly CursoInicianteContexto _context;
 
-        public TarefaController(CursoInicianteContexto context)
-        {
-            _context = context;
-        }
+        public TarefaController(CursoInicianteContexto context) => _context = context;
 
         // GET: Tarefa
         public async Task<IActionResult> Index()

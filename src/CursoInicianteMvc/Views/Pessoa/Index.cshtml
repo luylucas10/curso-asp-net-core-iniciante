@@ -1,5 +1,3 @@
-@model IEnumerable<CursoInicianteMvc.Models.Pessoa>
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Index";
@@ -55,6 +53,8 @@
                     <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
                     <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
                     <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
+                    <th data-title="Qnt. Tarefas" data-field="qntTarefas" data-sortable="false" data-align="center"></th>
+                    <th data-title="Qnt. Sub-Tarefas" data-field="qntSubtarefas" data-sortable="false" data-align="center"></th>
                     <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
                 </thead>
             </table>
