@@ -5,29 +5,35 @@
     ViewData["Title"] = "Index";
 }
 
-@section Breadcumb
+@section Styles
 {
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-            <li class="breadcrumb-item text-sm">
-                <a class="opacity-5 text-dark" asp-controller="Home" asp-action="Index">Início</a>
-            </li>
-            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Pessoas</li>
-        </ol>
-        @* <h6 class="font-weight-bolder mb-0">Pessoas</h6> *@
-    </nav>
+    <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.min.css">
 }
+
+@section Scripts
+{
+    <script type="text/javascript" src="lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
+    <script>
+    function btnAcoes(value, row){
+        const urlEditar = $("input#url-editar").val();
+        return `
+            <a href="${urlEditar.concat("/").concat(value)}" class="btn btn-primary">Editar</a>
+` 
+    }
+    </script>
+}
+
+<input type="hidden" id="url-editar" value="@Url.Action("Edit")">
 
 <div class="row">
     <div class="card">
-        <div class="card-header">
-            <div class="card-title d-flex">
-                <div>
-                    <h4>Pessoas</h4>
-                </div>
-                <div class="ms-auto">
-                    <a asp-action="Create" class="btn btn-info">Nova</a>
-                </div>
+        <div class="card-header d-flex py-3">
+            <div class="card-title">
+                <h4>Pessoas</h4>
+            </div>
+            <div class="ms-auto">
+                <a asp-action="Create" class="btn btn-primary">Nova</a>
             </div>
         </div>
         <div class="card-body">
@@ -38,13 +44,12 @@
                 data-pagination="true"
                 data-side-pagination="server"
                 data-locale="pt-BR">
-                    <thead>
-                        <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
-                        <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
-                        <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
-                        <th data-title="#" data-field="id"></th>
-                    </thead>
-
+                <thead>
+                <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
+                <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
+                <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
+                <th data-title="#" data-field="id" data-formatter="btnAcoes"></th>
+                </thead>
             </table>
         </div>
     </div>

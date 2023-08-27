@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CursoInicianteMvc.Data;
 using CursoInicianteMvc.Models;
@@ -14,12 +9,8 @@ namespace CursoInicianteMvc.Controllers
     {
         private readonly CursoInicianteContexto _context;
 
-        public PessoaController(CursoInicianteContexto context)
-        {
-            _context = context;
-        }
+        public PessoaController(CursoInicianteContexto context) => _context = context;
 
-        // GET: Pessoa
         public ViewResult Index() => View();
 
         public async Task<JsonResult> Search(int? limit, int? offset, string? search, string? sort, string? order)
@@ -31,111 +22,95 @@ namespace CursoInicianteMvc.Controllers
 
             if (!string.IsNullOrWhiteSpace(search))
                 consulta = consulta.Where(x =>
-                    x.Nome.Contains(search) || x.Email.Contains(search) || x.Celular.Contains(search));
+                    x.Nome.Contains(search)
+                    || x.Email.Contains(search)
+                    || x.Celular.Contains(search));
 
             var total = await consulta.CountAsync();
 
-            
-            if (sort == "Nome" && order == "desc") consulta = consulta.OrderByDescending(x => x.Nome);
-            else if (sort == "Email" && order == "asc") consulta = consulta.OrderBy(x => x.Email);
-            else if (sort == "Email" && order == "desc") consulta = consulta.OrderByDescending(x => x.Email);
-            else if (sort == "Celular" && order == "asc") consulta = consulta.OrderBy(x => x.Celular);
-            else if (sort == "Celular" && order == "desc") consulta = consulta.OrderByDescending(x => x.Celular);
-            else consulta = consulta.OrderBy(x => x.Nome);
+            consulta = sort switch
+            {
+                "Nome" when order == "desc" => consulta.OrderByDescending(x => x.Nome),
+                "Email" when order == "asc" => consulta.OrderBy(x => x.Email),
+                "Email" when order == "desc" => consulta.OrderByDescending(x => x.Email),
+                "Celular" when order == "asc" => consulta.OrderBy(x => x.Celular),
+                "Celular" when order == "desc" => consulta.OrderByDescending(x => x.Celular),
+                _ => consulta.OrderBy(x => x.Nome)
+            };
 
             var rows = await consulta.ToListAsync();
-            
+
             return new JsonResult(new { rows, total });
         }
 
-        // GET: Pessoa/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null || _context.Pessoa == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
-            var pessoa = await _context.Pessoa
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var pessoa = await _context.Pessoa.FirstOrDefaultAsync(m => m.Id == id);
+
             if (pessoa == null)
-            {
                 return NotFound();
-            }
 
             return View(pessoa);
         }
 
-        // GET: Pessoa/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        public ViewResult Create() => View();
 
-        // POST: Pessoa/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nome,Email,Celular")] Pessoa pessoa)
+        public async Task<IActionResult> Create(PessoaCadastroViewModel novaPessoa)
         {
             if (ModelState.IsValid)
             {
-                pessoa.Id = Guid.NewGuid();
+                var pessoa = new Pessoa()
+                {
+                    Id = Guid.NewGuid(), Nome = novaPessoa.Nome, Email = novaPessoa.Email, Celular = novaPessoa.Celular
+                };
                 _context.Add(pessoa);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(pessoa);
+            return View(novaPessoa);
         }
 
-        // GET: Pessoa/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null || _context.Pessoa == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
 
             var pessoa = await _context.Pessoa.FindAsync(id);
-            if (pessoa == null)
-            {
-                return NotFound();
-            }
 
-            return View(pessoa);
+            if (pessoa == null)
+                return NotFound();
+
+            return View(new PessoaEditarViewModel(pessoa.Id, pessoa.Nome, pessoa.Email, pessoa.Celular));
         }
 
-        // POST: Pessoa/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,Email,Celular")] Pessoa pessoa)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,Email,Celular")] PessoaEditarViewModel pessoa)
         {
             if (id != pessoa.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(pessoa);
+                    var entidade = await _context.Pessoa.FindAsync(pessoa.Id);
+                    entidade.Nome = pessoa.Nome;
+                    entidade.Email = pessoa.Email;
+                    entidade.Celular = pessoa.Celular;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!PessoaExists(pessoa.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace CursoInicianteMvc.Models;
 
 public record ErrorViewModel
@@ -34,3 +36,14 @@ public record InicioViewModel
     public int QuantidadePessoas { get; init; }
     public int QuantidadeTarafas { get; init; }
 }
+
+public record PessoaCadastroViewModel(
+    [Required, MinLength(3), MaxLength(100)] string Nome, 
+    [Required, MinLength(3), MaxLength(100), EmailAddress, Display(Name = "e-Mail")] string Email, 
+    [MinLength(9), MaxLength(14), Display(Name = "Celular")] string? Celular);
+    
+public record PessoaEditarViewModel(
+    Guid Id,
+    [Required, MinLength(3), MaxLength(100)] string Nome, 
+    [Required, MinLength(3), MaxLength(100), EmailAddress, Display(Name = "e-Mail")] string Email, 
+    [MinLength(9), MaxLength(14), Display(Name = "Celular")] string? Celular);
