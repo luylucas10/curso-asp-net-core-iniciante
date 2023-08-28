@@ -31,6 +31,7 @@ public class TarefaConfiguracao : IEntityTypeConfiguration<Tarefa>
         builder.Property(x => x.Id).HasDefaultValueSql("newid()");
 
         builder.Property(x => x.Descricao).HasMaxLength(200);
+        builder.Property(x => x.RealizadoEm).IsRequired(false);
 
         builder.HasOne(x => x.Pessoa)
             .WithMany(x => x.Tarefas)

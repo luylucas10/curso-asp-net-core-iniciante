@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,14 +12,50 @@ namespace CursoInicianteMvc.Controllers
 
         public TarefaController(CursoInicianteContexto context) => _context = context;
 
-        // GET: Tarefa
-        public async Task<IActionResult> Index()
-        {
-            var cursoInicianteContexto = _context.Tarefa.Include(t => t.Pessoa);
-            return View(await cursoInicianteContexto.ToListAsync());
-        }
+        public ViewResult Index() => View();
 
-        // GET: Tarefa/Details/5
+        public async Task<JsonResult> Search(Guid? pessoaId, int? limit, int? offset, string? search, string? sort,
+            string? order)
+        {
+            limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
+            offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
+
+            var consulta = _context
+                .Tarefa
+                .Include(x => x.Subtarefas)
+                .AsQueryable()
+                .AsNoTracking();
+
+            if (pessoaId.HasValue)
+                consulta = consulta.Where(x => x.PessoaId == pessoaId);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                consulta = consulta.Where(x => x.Descricao.Contains(search));
+
+            var total = await consulta.CountAsync();
+
+            consulta = sort switch
+            {
+                "RealizadoEm" when order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
+                "RealizadoEm" when order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
+                "Descricao" when order == "desc" => consulta.OrderByDescending(x => x.Descricao),
+                _ => consulta.OrderBy(x => x.Descricao)
+            };
+
+            var rows = await consulta
+                .Select(x => new
+                {
+                    x.Id, x.Descricao, x.RealizadoEm,
+                    qntSubtarefas = x.Subtarefas.Count,
+                    qntSubtarefasConcluidas = x.Subtarefas.Count(a => a.RealizadoEm.HasValue)
+                })
+                .Skip(offset.GetValueOrDefault())
+                .Take(limit.GetValueOrDefault())
+                .ToListAsync();
+
+            return new JsonResult(new { rows, total });
+        }
+        
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Tarefa == null)
@@ -54,14 +86,15 @@ namespace CursoInicianteMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PessoaId,Descricao,RealizadoEm")] TarefaViewModel tarefa)
+        public async Task<IActionResult> Create([Bind("PessoaId,Descricao")] TarefaCadastrarViewModel tarefaCadastrar)
         {
             if (ModelState.IsValid)
             {
                 var tarefaEntidade = new Tarefa
                 {
-                    PessoaId = tarefa.PessoaId,
-                    Descricao = tarefa.Descricao
+                    PessoaId = tarefaCadastrar.PessoaId,
+                    Descricao = tarefaCadastrar.Descricao,
+                    RealizadoEm = null
                 };
 
                 _context.Add(tarefaEntidade);
@@ -69,8 +102,8 @@ namespace CursoInicianteMvc.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome), tarefa.PessoaId);
-            return View(tarefa);
+            ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome), tarefaCadastrar.PessoaId);
+            return View(tarefaCadastrar);
         }
 
         // GET: Tarefa/Edit/5
@@ -104,7 +137,8 @@ namespace CursoInicianteMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id,
-            [Bind("Id,PessoaId,Descricao,RealizadoEm")] TarefaEditarViewModel tarefa)
+            [Bind("Id,PessoaId,Descricao,RealizadoEm")]
+            TarefaEditarViewModel tarefa)
         {
             if (id != tarefa.Id)
             {
@@ -118,6 +152,7 @@ namespace CursoInicianteMvc.Controllers
                     var entidade = await _context.Tarefa.FindAsync(id);
                     entidade.Descricao = tarefa.Descricao;
                     entidade.RealizadoEm = tarefa.RealizadoEm;
+                    entidade.PessoaId = tarefa.PessoaId;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

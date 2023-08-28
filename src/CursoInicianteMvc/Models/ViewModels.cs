@@ -9,11 +9,14 @@ public record ErrorViewModel
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }
 
-public record TarefaViewModel
+public record TarefaCadastrarViewModel
 {
+    [Required, Display(Name = "Pessoa")]
     public Guid PessoaId { get; init; }
-    public required string Descricao { get; init; }
-    public DateTime? RealizadoEm { get; init; }
+    
+    
+    [Required, Display(Name = "Descrição")]
+    public string Descricao { get; init; }
 }
 
 public record TarefaEditarViewModel
