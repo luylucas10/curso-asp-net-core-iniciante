@@ -2,51 +2,60 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CursoInicianteMvc.Models;
 
-public record ErrorViewModel
+public class ErrorViewModel
 {
-    public string? RequestId { get; init; }
+    public string? RequestId { get; set; }
 
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }
 
-public record TarefaCadastrarViewModel
+public class PessoaCadastroViewModel
 {
-    [Required, Display(Name = "Pessoa")]
-    public Guid PessoaId { get; init; }
-    
-    
-    [Required, Display(Name = "Descrição")]
-    public string Descricao { get; init; }
+    [Required, MinLength(3), MaxLength(100)]
+    public string Nome { get; set; }
+
+    [Required, MinLength(3), MaxLength(100), EmailAddress, Display(Name = "e-Mail")]
+    public string Email { get; set; }
+
+    [MinLength(9), MaxLength(14), Display(Name = "Celular")]
+    public string? Celular { get; set; }
 }
 
-public record TarefaEditarViewModel
+public class PessoaEditarViewModel : PessoaCadastroViewModel
 {
-    public Guid Id { get; init; }
-    public Guid PessoaId { get; init; }
-    public required string Descricao { get; init; }
-    public DateTime? RealizadoEm { get; init; }
+    public Guid Id { get; set; }
 }
 
-public record SubtarefaCadastrarViewModel
+public class TarefaCadastrarViewModel
 {
-    public Guid TarefaId { get; init; }
-    public string Descricao { get; init; }
-    public string RealizadoEm { get; init; }
+    [Required, Display(Name = "Pessoa")] 
+    public Guid PessoaId { get; set; }
+
+    [Required, Display(Name = "Descrição"), MinLength(5), MaxLength(100)]
+    public string Descricao { get; set; }
 }
 
-public record InicioViewModel
+public class TarefaEditarViewModel : TarefaCadastrarViewModel
 {
-    public int QuantidadePessoas { get; init; }
-    public int QuantidadeTarafas { get; init; }
+    public Guid Id { get; set; }
 }
 
-public record PessoaCadastroViewModel(
-    [Required, MinLength(3), MaxLength(100)] string Nome, 
-    [Required, MinLength(3), MaxLength(100), EmailAddress, Display(Name = "e-Mail")] string Email, 
-    [MinLength(9), MaxLength(14), Display(Name = "Celular")] string? Celular);
-    
-public record PessoaEditarViewModel(
-    Guid Id,
-    [Required, MinLength(3), MaxLength(100)] string Nome, 
-    [Required, MinLength(3), MaxLength(100), EmailAddress, Display(Name = "e-Mail")] string Email, 
-    [MinLength(9), MaxLength(14), Display(Name = "Celular")] string? Celular);
+public class SubtarefaCadastrarViewModel
+{
+    [Display(Name = "Tarefa")] 
+    public Guid TarefaId { get; set; }
+
+    [Display(Name = "Descrição"), Required]
+    public string Descricao { get; set; }
+}
+
+public class SubtarefaEditarViewModel : SubtarefaCadastrarViewModel
+{
+    public Guid Id { get; set; }
+}
+
+public class InicioViewModel
+{
+    public int QuantidadePessoas { get; set; }
+    public int QuantidadeTarafas { get; set; }
+}

@@ -15,14 +15,43 @@ namespace CursoInicianteMvc.Controllers
             _context = context;
         }
 
-        // GET: Subtarefa
-        public async Task<IActionResult> Index()
+        public async Task<JsonResult> Search(Guid? tarefaId, int? limit, int? offset, string? search, string? sort,
+            string? order)
         {
-            var cursoInicianteContexto = _context.Subtarefa.Include(s => s.Tarefa);
-            return View(await cursoInicianteContexto.ToListAsync());
+            limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
+            offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
+
+            var consulta = _context
+                .Subtarefa
+                .AsQueryable()
+                .AsNoTracking()
+                .Where(x => x.TarefaId == tarefaId);
+
+            if (!string.IsNullOrWhiteSpace(search))
+                consulta = consulta.Where(x => x.Descricao.Contains(search));
+
+            var total = await consulta.CountAsync();
+
+            consulta = sort switch
+            {
+                "RealizadoEm" when order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
+                "RealizadoEm" when order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
+                "Descricao" when order == "desc" => consulta.OrderByDescending(x => x.Descricao),
+                _ => consulta.OrderBy(x => x.Descricao)
+            };
+
+            var rows = await consulta
+                .Select(x => new
+                {
+                    x.Id, x.Descricao, x.RealizadoEm
+                })
+                .Skip(offset.GetValueOrDefault())
+                .Take(limit.GetValueOrDefault())
+                .ToListAsync();
+
+            return new JsonResult(new { rows, total });
         }
 
-        // GET: Subtarefa/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null || _context.Subtarefa == null)
@@ -41,32 +70,33 @@ namespace CursoInicianteMvc.Controllers
             return View(subtarefa);
         }
 
-        // GET: Subtarefa/Create
-        public IActionResult Create()
+        public IActionResult Create(Guid tarefaId)
         {
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", "Id");
-            return View();
+            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), tarefaId);
+            return View(new SubtarefaCadastrarViewModel() { TarefaId = tarefaId });
         }
 
-        // POST: Subtarefa/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TarefaId,Descricao,RealizadoEm")] Subtarefa subtarefa)
+        public async Task<IActionResult> Create([Bind("TarefaId,Descricao")] SubtarefaCadastrarViewModel subtarefa)
         {
             if (ModelState.IsValid)
             {
-                subtarefa.Id = Guid.NewGuid();
-                _context.Add(subtarefa);
+                _context.Add(new Subtarefa
+                {
+                    Id = Guid.NewGuid(),
+                    TarefaId = subtarefa.TarefaId,
+                    Descricao = subtarefa.Descricao
+                });
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Tarefa", new { Id = subtarefa.TarefaId });
             }
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", "Id", subtarefa.TarefaId);
+
+            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), subtarefa.TarefaId);
             return View(subtarefa);
         }
 
-        // GET: Subtarefa/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null || _context.Subtarefa == null)
@@ -79,8 +109,10 @@ namespace CursoInicianteMvc.Controllers
             {
                 return NotFound();
             }
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", "Id", subtarefa.TarefaId);
-            return View(subtarefa);
+
+            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), subtarefa.TarefaId);
+            return View(new SubtarefaEditarViewModel
+                { TarefaId = subtarefa.TarefaId, Descricao = subtarefa.Descricao, Id = subtarefa.Id });
         }
 
         // POST: Subtarefa/Edit/5
@@ -88,7 +120,9 @@ namespace CursoInicianteMvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,TarefaId,Descricao,RealizadoEm")] Subtarefa subtarefa)
+        public async Task<IActionResult> Edit(Guid id,
+            [Bind("Id,TarefaId,Descricao,RealizadoEm")]
+            SubtarefaEditarViewModel subtarefa)
         {
             if (id != subtarefa.Id)
             {
@@ -99,23 +133,21 @@ namespace CursoInicianteMvc.Controllers
             {
                 try
                 {
-                    _context.Update(subtarefa);
+                    var entidade = await _context.Subtarefa.FindAsync(subtarefa.Id);
+                    entidade.Descricao = subtarefa.Descricao;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!SubtarefaExists(subtarefa.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Details", "Tarefa", new { Id = subtarefa.TarefaId });
             }
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", "Id", subtarefa.TarefaId);
+
+            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), subtarefa.TarefaId);
             return View(subtarefa);
         }
 
@@ -147,19 +179,35 @@ namespace CursoInicianteMvc.Controllers
             {
                 return Problem("Entity set 'CursoInicianteContexto.Subtarefa'  is null.");
             }
+
             var subtarefa = await _context.Subtarefa.FindAsync(id);
             if (subtarefa != null)
             {
                 _context.Subtarefa.Remove(subtarefa);
             }
-            
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Tarefa", new { Id = subtarefa.TarefaId });
         }
 
         private bool SubtarefaExists(Guid id)
         {
-          return (_context.Subtarefa?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Subtarefa?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> Concluir(Guid id)
+        {
+            var entidade = await _context.Subtarefa.FindAsync(id);
+
+            if (entidade == null)
+                return RedirectToAction("Index", "Pessoa");
+
+            entidade.RealizadoEm = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id });
         }
     }
 }

@@ -1,63 +1,54 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Pessoas";
 }
 
-@section Styles
-{
-    <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.min.css">
-}
+@section Styles { <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.min.css"> }
 
 @section Scripts
 {
     <script type="text/javascript" src="lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
     <script>
-    function btnAcoes(value, row){
-        const urlEditar = $("input#url-editar").val();
+    function btnAcoes(id){
         const urlDetalhes = $("input#url-detalhes").val();
-        const urlExcluir = $("input#url-excluir").val();
-        return `
-            <a href="${urlDetalhes.concat("/").concat(value)}" class="btn btn-primary">Detalhes</a>
-            <a href="${urlEditar.concat("/").concat(value)}" class="btn btn-info">Editar</a>
-            <a href="${urlExcluir.concat("/").concat(value)}" class="btn btn-danger">Excluir</a>
-` 
+        return `<a href="${urlDetalhes.concat("/").concat(id)}" class="btn btn-primary">Detalhes</a>` 
     }
     </script>
 }
 
-<input type="hidden" id="url-editar" value="@Url.Action("Edit")">
 <input type="hidden" id="url-detalhes" value="@Url.Action("Details")">
-<input type="hidden" id="url-excluir" value="@Url.Action("Delete")">
 
 <div class="row">
-    <div class="card">
-        <div class="card-header d-flex py-3">
-            <div class="card-title">
-                <h4>Pessoas</h4>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex pt-3">
+                <div class="card-title">
+                    <h4>Pessoas</h4>
+                </div>
+                <div class="ms-auto">
+                    <a asp-action="Create" class="btn btn-primary">Nova</a>
+                </div>
             </div>
-            <div class="ms-auto">
-                <a asp-action="Create" class="btn btn-primary">Nova</a>
-            </div>
-        </div>
-        <div class="card-body">
-            <table
-                class="table"
-                data-toggle="table"
-                data-url="@Url.Action("Search")"
-                data-pagination="true"
-                data-side-pagination="server"
-                data-locale="pt-BR"
-                data-search="true">
-                <thead>
-                    <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome"></th>
-                    <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email"></th>
+            <div class="card-body">
+                <table
+                    class="table"
+                    data-toggle="table"
+                    data-url="@Url.Action("Search")"
+                    data-pagination="true"
+                    data-side-pagination="server"
+                    data-locale="pt-BR"
+                    data-search="true">
+                    <thead>
+                    <th data-title="Nome" data-field="nome" data-sortable="true" data-sort-name="Nome" data-width="20" data-width-unit="%"></th>
+                    <th data-title="e-Mail" data-field="email" data-sortable="true" data-sort-name="Email" data-width="20" data-width-unit="%"></th>
                     <th data-title="Celular" data-field="celular" data-sortable="true" data-sort-name="Celular"></th>
                     <th data-title="Qnt. Tarefas" data-field="qntTarefas" data-sortable="false" data-align="center"></th>
                     <th data-title="Qnt. Sub-Tarefas" data-field="qntSubtarefas" data-sortable="false" data-align="center"></th>
                     <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
-                </thead>
-            </table>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>

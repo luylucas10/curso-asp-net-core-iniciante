@@ -17,7 +17,7 @@ namespace CursoInicianteMvc.Controllers
         {
             limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
             offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
-            
+
 
             var consulta = _context
                 .Pessoa
@@ -100,7 +100,8 @@ namespace CursoInicianteMvc.Controllers
             if (pessoa == null)
                 return NotFound();
 
-            return View(new PessoaEditarViewModel(pessoa.Id, pessoa.Nome, pessoa.Email, pessoa.Celular));
+            return View(new PessoaEditarViewModel
+                { Id = pessoa.Id, Nome = pessoa.Nome, Email = pessoa.Email, Celular = pessoa.Celular });
         }
 
         [HttpPost]
@@ -148,7 +149,8 @@ namespace CursoInicianteMvc.Controllers
                 return NotFound();
             }
 
-            return View(new PessoaEditarViewModel(pessoa.Id, pessoa.Nome, pessoa.Email, pessoa.Celular));
+            return View(new PessoaEditarViewModel
+                { Id = pessoa.Id, Nome = pessoa.Nome, Email = pessoa.Email, Celular = pessoa.Celular });
         }
 
         // POST: Pessoa/Delete/5
