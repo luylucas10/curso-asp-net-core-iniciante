@@ -1,0 +1,16 @@
+﻿@model Guid
+
+<table
+    class="table"
+    data-toggle="table"
+    data-url="@Url.Action("Search", "Subtarefa", new { tarefaId = Model })"
+    data-pagination="true"
+    data-side-pagination="server"
+    data-locale="pt-BR"
+    data-search="true">
+    <thead>
+    <th data-title="Descrição" data-field="descricao" data-sortable="true" data-sort-name="Descricao"></th>
+    <th data-title="Realizado Em" data-field="realizadoEm" data-sortable="true" data-sort-name="RealizadoEm" data-formatter="formatarData"></th>
+    <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
+    </thead>
+</table>

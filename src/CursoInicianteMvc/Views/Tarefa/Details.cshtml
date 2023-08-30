@@ -1,7 +1,7 @@
 @model CursoInicianteMvc.Models.TarefaDetalhesViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Tarefa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,29 +11,7 @@
 {
     <script type="text/javascript" src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="~/lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
-    <script>
-    function btnAcoes(id, row){
-        const urlDetalhes = $("input#url-detalhes");      
-        
-        let html = `<a href="${urlDetalhes.val().concat("/").concat(id)}" class="btn btn-primary">Detalhes</a>`        
-        
-        if (!row.realizadoEm){
-            const urlEditar = $("input#url-editar");
-            const urlExcluir = $("input#url-excluir");        
-            html += `
-                <a href="${urlEditar.val().concat("/").concat(id)}" class="btn btn-info">Editar</a>
-                <a href="${urlExcluir.val().concat("/").concat(id)}" class="btn btn-danger">Excluir</a>
-            `
-        }
-        return html;
-    }
-    
-    function formatarData(id){
-        if (id)
-            return new Date(id).toLocaleDateString();
-        return "Não realizada ainda";
-    }
-    </script>
+    <script type="text/javascript" src="~/js/tarefa.details.js" asp-append-version="true"></script>
 }
 
 <input type="hidden" id="url-editar" value="@Url.Action("Edit", "Subtarefa")">
@@ -55,7 +33,7 @@
                             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Excluir</a>
                         </div>
                         <div class="mx-1">
-                            <form asp-controller="Tarefa" asp-action="Concluir" method="post">
+                            <form asp-controller="Tarefa" asp-action="Finish" method="post">
                                 <button class="mx-1 btn btn-primary" value="@Model.Id" name="@nameof(Model.Id)">Concluir</button>
                             </form>
                         </div>
@@ -71,7 +49,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label asp-for="PessoaId" class="form-label"></label>
-                            <input asp-for="Pessoa.Nome" class="form-control-plaintext" readonly="readonly"/>
+                            <input asp-for="PessoaNome" class="form-control-plaintext" readonly="readonly"/>
                         </div>
                     </div>
                     <div class="col">
@@ -84,26 +62,13 @@
 
             </div>
             <div class="card-body">
-                <table
-                    class="table"
-                    data-toggle="table"
-                    data-url="@Url.Action("Search", "Subtarefa", new { tarefaId = Model.Id })"
-                    data-pagination="true"
-                    data-side-pagination="server"
-                    data-locale="pt-BR"
-                    data-search="true">
-                    <thead>
-                    <th data-title="Descrição" data-field="descricao" data-sortable="true" data-sort-name="Descricao"></th>
-                    <th data-title="Realizado Em" data-field="realizadoEm" data-sortable="true" data-sort-name="RealizadoEm" data-formatter="formatarData"></th>
-                    <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
-                    </thead>
-                </table>
+                @{ @(await Html.PartialAsync("_Subtarefas", Model.Id))}
             </div>
             <div class="card-footer d-flex">
                 <div><a asp-controller="Pessoa" asp-action="Details" asp-route-id="@Model.PessoaId" class="btn btn-secondary">Voltar</a></div>
                 @if (!Model.RealizadoEm.HasValue)
                 {
-                    <div class="ms-auto"><a asp-controller="Subtarefa" asp-action="Create" asp-route-tarefaId="@Model?.Id" class="mx-1 btn btn-secondary">Nova Sub-Tarefa</a></div>
+                    <div class="ms-auto"><a asp-controller="Subtarefa" asp-action="Create" asp-route-tarefaId="@Model?.Id" class="mx-1 btn btn-info">Nova Sub-Tarefa</a></div>
                 }
             </div>
         </div>

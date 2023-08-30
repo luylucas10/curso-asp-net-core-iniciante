@@ -1,225 +1,100 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CursoInicianteMvc.Data;
 using CursoInicianteMvc.Models;
+using CursoInicianteMvc.Services;
 
 namespace CursoInicianteMvc.Controllers
 {
     public class TarefaController : Controller
     {
-        private readonly CursoInicianteContexto _context;
+        private readonly ITarefaService _tarefaService;
 
-        public TarefaController(CursoInicianteContexto context) =>
-            _context = context;
+        public TarefaController(ITarefaService tarefaService) =>
+            _tarefaService = tarefaService;
 
         [HttpGet]
         public async Task<JsonResult> Search(TarefaFilter filtro)
         {
-            filtro.PreparePagination();
-
-            var consulta = _context
-                .Tarefa
-                .Include(x => x.Subtarefas)
-                .AsQueryable()
-                .AsNoTracking()
-                .Where(x => x.PessoaId == filtro.PessoaId);
-
-            if (!string.IsNullOrWhiteSpace(filtro.Search))
-                consulta = consulta.Where(x => x.Descricao.Contains(filtro.Search));
-
-            var total = await consulta.CountAsync();
-
-            consulta = filtro.Sort switch
-            {
-                "RealizadoEm" when filtro.Order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
-                "RealizadoEm" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
-                "Descricao" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Descricao),
-                _ => consulta.OrderBy(x => x.Descricao)
-            };
-
-            var rows = await consulta
-                .Select(x => new
-                {
-                    x.Id, x.Descricao, x.RealizadoEm,
-                    qntSubtarefas = x.Subtarefas.Count,
-                    qntSubtarefasConcluidas = x.Subtarefas.Count(a => a.RealizadoEm.HasValue)
-                })
-                .Skip(filtro.Offset.GetValueOrDefault())
-                .Take(filtro.Limit.GetValueOrDefault())
-                .ToListAsync();
-
-            return new JsonResult(new { rows, total });
+            var result = await _tarefaService.Search(filtro);
+            return new JsonResult(new { rows = result.Item2, total = result.Item1 });
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var tarefa = await _context.Tarefa
-                .Include(t => t.Pessoa)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (tarefa == null)
-                return NotFound();
-
-            return View(new TarefaDetalhesViewModel()
-            {
-                Id = tarefa.Id,
-                PessoaId = tarefa.PessoaId,
-                Descricao = tarefa.Descricao,
-                RealizadoEm = tarefa.RealizadoEm,
-                Pessoa = new PessoaEditarViewModel()
-                {
-                    Nome = tarefa.Pessoa.Nome
-                }
-            });
+            var tarefa = await _tarefaService.FindDetails(id.GetValueOrDefault());
+            if (tarefa == null) return NotFound();
+            return View(tarefa);
         }
 
         [HttpGet]
-        public IActionResult Create(Guid pessoaId)
+        public async Task<IActionResult> Create(Guid pessoaId)
         {
-            ViewData["PessoaId"] = new SelectList(_context.Pessoa, nameof(Pessoa.Id), nameof(Pessoa.Nome), pessoaId);
-            return View(new TarefaCadastrarViewModel { PessoaId = pessoaId });
+            var tarefa = await _tarefaService.FindCreate(pessoaId);
+            return tarefa == null
+                ? NotFound()
+                : View(tarefa);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PessoaId,Descricao")] TarefaCadastrarViewModel tarefa)
+        public async Task<IActionResult> Create(TarefaCadastroViewModel tarefa)
         {
             if (!ModelState.IsValid)
             {
-                ViewData["PessoaId"] = new SelectList(_context.Pessoa, nameof(Pessoa.Id), nameof(Pessoa.Nome),
-                    tarefa.PessoaId);
+                tarefa = (await _tarefaService.FindCreate(tarefa.PessoaId))!;
                 return View(tarefa);
             }
 
-            var entidade = new Tarefa
-            {
-                PessoaId = tarefa.PessoaId,
-                Descricao = tarefa.Descricao
-            };
-
-            _context.Add(entidade);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Details", "Pessoa", new { Id = tarefa.PessoaId });
+            await _tarefaService.Create(tarefa);
+            return RedirectToAction(nameof(Details), "Pessoa", new { Id = tarefa.PessoaId });
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var tarefa = await _context.Tarefa.Include(x => x.Pessoa).Where(x => x.Id == id).FirstOrDefaultAsync();
-
-            if (tarefa == null)
-                return NotFound();
-
-            ViewData["PessoaId"] =
-                new SelectList(_context.Pessoa, nameof(Pessoa.Id), nameof(Pessoa.Nome), tarefa.PessoaId);
-
-            return View(new TarefaEditarViewModel
-            {
-                Id = tarefa.Id,
-                PessoaId = tarefa.PessoaId,
-                Descricao = tarefa.Descricao
-            });
+            var tarefa = await _tarefaService.FindEdit(id.GetValueOrDefault());
+            if (tarefa == null) return NotFound();
+            return View(tarefa);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id,
-            [Bind("Id,PessoaId,Descricao,RealizadoEm")] TarefaEditarViewModel tarefa)
+        public async Task<IActionResult> Edit(TarefaEditarViewModel tarefa)
         {
-            if (id != tarefa.Id)
-                return NotFound();
-
             if (!ModelState.IsValid)
             {
-                ViewData["PessoaId"] = new SelectList(_context.Pessoa, "Id", nameof(Pessoa.Nome), tarefa.PessoaId);
+                tarefa = (await _tarefaService.FindEdit(tarefa.Id))!;
                 return View(tarefa);
             }
 
-            try
-            {
-                var entidade = await _context.Tarefa.FindAsync(id);
-                entidade.Descricao = tarefa.Descricao;
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!await TarefaExists(tarefa.Id))
-                    return NotFound();
+            await _tarefaService.Edit(tarefa);
 
-                throw;
-            }
-
-            return RedirectToAction("Details", "Pessoa", new { Id = tarefa.PessoaId });
+            return RedirectToAction(nameof(Details), new { tarefa.Id });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<RedirectToActionResult> Concluir(Guid id)
+        public async Task<RedirectToActionResult> Finish(Guid? id)
         {
-            var entidade = await _context.Tarefa.Include(x => x.Subtarefas).Where(x => x.Id == id)
-                .FirstOrDefaultAsync();
-
-            if (entidade == null)
-                return RedirectToAction("Index", "Pessoa");
-
-            foreach (var sub in entidade.Subtarefas)
-                sub.RealizadoEm = DateTime.Now;
-
-            entidade.RealizadoEm = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Details", new { id });
+            await _tarefaService.Finish(id.GetValueOrDefault());
+            return RedirectToAction(nameof(Details), new { id });
         }
 
         [HttpGet]
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var tarefa = await _context.Tarefa
-                .Include(t => t.Pessoa)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (tarefa == null)
-                return NotFound();
-
-            return View(new TarefaDetalhesViewModel()
-            {
-                Id = tarefa.Id,
-                Descricao = tarefa.Descricao,
-                RealizadoEm = tarefa.RealizadoEm,
-                Pessoa = new PessoaEditarViewModel()
-                {
-                    Nome = tarefa.Pessoa.Nome
-                }
-            });
+            var tarefa = await _tarefaService.FindDetails(id.GetValueOrDefault());
+            if (tarefa == null) return NotFound();
+            return View(tarefa);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var tarefa = await _context.Tarefa.FindAsync(id);
-
-            if (tarefa != null)
-                _context.Tarefa.Remove(tarefa);
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("Details", "Pessoa", new { Id = tarefa.PessoaId });
+            var tarefa = await _tarefaService.FindDetails(id);
+            await _tarefaService.Delete(id);
+            return RedirectToAction(nameof(Details), "Pessoa", new { Id = tarefa.PessoaId });
         }
-
-        private async Task<bool> TarefaExists(Guid id) =>
-            await _context.Tarefa.AnyAsync(e => e.Id == id);
     }
 }

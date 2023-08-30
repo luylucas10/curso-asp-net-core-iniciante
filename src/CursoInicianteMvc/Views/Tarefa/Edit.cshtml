@@ -1,7 +1,7 @@
 @model CursoInicianteMvc.Models.TarefaEditarViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Tarefa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -22,8 +22,7 @@
                             <div class="col-12">
                                 <div class="form-group">
                                     <label asp-for="PessoaId" class="form-label"></label>
-                                    <select class="form-control" asp-items="ViewBag.PessoaId" disabled="disabled"></select>
-                                    <span asp-validation-for="PessoaId" class="text-danger"></span>
+                                    <input class="form-control" asp-for="PessoaNome" disabled="disabled" readonly="readonly"/>
                                 </div>
                             </div>
                             <div class="col-12">

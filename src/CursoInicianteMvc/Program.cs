@@ -16,6 +16,9 @@ builder.Services.AddDbContext<CursoInicianteContexto>(o =>
 builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
 builder.Services.AddScoped<IPessoaService, PessoaService>();
 
+builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
+builder.Services.AddScoped<ITarefaService, TarefaService>();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

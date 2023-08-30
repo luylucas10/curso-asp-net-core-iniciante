@@ -1,7 +1,7 @@
 @model CursoInicianteMvc.Models.TarefaDetalhesViewModel
 
 @{
-    ViewData["Title"] = "Excluir";
+    ViewData["Title"] = "Excluir Tarefa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,14 +11,7 @@
 {
     <script type="text/javascript" src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="~/lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
-    <script>
-    
-    function formatarData(id){
-        if (id)
-            return new Date(id).toLocaleDateString();
-        return "Não realizada ainda";
-    }
-    </script>
+    <script type="text/javascript" src="~/js/tarefa.details.js" asp-append-version="true"></script>
 }
 
 <div class="row">
@@ -34,7 +27,7 @@
                     <div class="col">
                         <div class="form-group">
                             <label asp-for="PessoaId" class="form-label"></label>
-                            <input asp-for="Pessoa.Nome" class="form-control-plaintext" readonly="readonly"/>
+                            <input asp-for="PessoaNome" class="form-control-plaintext" readonly="readonly"/>
                         </div>
                     </div>
                     <div class="col">
@@ -48,20 +41,7 @@
             </div>
             <div class="card-body">
                 <h5 class="text-danger">As subtarefas serão excluídas juntamente com a tarefa</h5>
-                <table
-                    class="table"
-                    data-toggle="table"
-                    data-url="@Url.Action("Search", "Subtarefa", new { tarefaId = Model.Id })"
-                    data-pagination="true"
-                    data-side-pagination="server"
-                    data-locale="pt-BR"
-                    data-search="true">
-                    <thead>
-                    <th data-title="Descrição" data-field="descricao" data-sortable="true" data-sort-name="Descricao"></th>
-                    <th data-title="Realizado Em" data-field="realizadoEm" data-sortable="true" data-sort-name="RealizadoEm" data-formatter="formatarData"></th>
-                    <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
-                    </thead>
-                </table>
+                @{@(await Html.PartialAsync("_Subtarefas", Model.Id))}
             </div>
             <div class="card-footer d-flex">
                 <div>

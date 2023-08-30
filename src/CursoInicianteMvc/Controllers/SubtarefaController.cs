@@ -71,7 +71,7 @@ namespace CursoInicianteMvc.Controllers
                 TarefaId = subtarefa.TarefaId,
                 Descricao = subtarefa.Descricao,
                 RealizadoEm = subtarefa.RealizadoEm,
-                Tarefa = new TarefaDetalhesViewModel()
+                Tarefa = new TarefaDetalhesViewModel
                 {
                     Descricao = subtarefa.Tarefa.Descricao
                 }
@@ -81,12 +81,12 @@ namespace CursoInicianteMvc.Controllers
         public IActionResult Create(Guid tarefaId)
         {
             ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), tarefaId);
-            return View(new SubtarefaCadastrarViewModel() { TarefaId = tarefaId });
+            return View(new SubtarefaCadastroViewModel() { TarefaId = tarefaId });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TarefaId,Descricao")] SubtarefaCadastrarViewModel subtarefa)
+        public async Task<IActionResult> Create([Bind("TarefaId,Descricao")] SubtarefaCadastroViewModel subtarefa)
         {
             if (ModelState.IsValid)
             {

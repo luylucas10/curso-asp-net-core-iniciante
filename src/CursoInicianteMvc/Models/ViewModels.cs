@@ -23,7 +23,9 @@ public class PessoaCadastroViewModel
 
 public class PessoaEditarViewModel : PessoaCadastroViewModel
 {
-    public PessoaEditarViewModel() { }
+    public PessoaEditarViewModel()
+    {
+    }
 
     public PessoaEditarViewModel(Pessoa pessoa)
     {
@@ -36,36 +38,66 @@ public class PessoaEditarViewModel : PessoaCadastroViewModel
     public Guid Id { get; set; }
 }
 
-public class TarefaCadastrarViewModel
+public class TarefaCadastroViewModel
 {
-    [Required, Display(Name = "Pessoa")] 
-    public Guid PessoaId { get; set; }
+    public TarefaCadastroViewModel()
+    {
+    }
+
+    public TarefaCadastroViewModel(Pessoa pessoa)
+    {
+        PessoaId = pessoa.Id;
+        PessoaNome = pessoa.Nome;
+    }
+
+    [Required, Display(Name = "Pessoa")] public Guid PessoaId { get; set; }
 
     [Required, Display(Name = "Descrição"), MinLength(5), MaxLength(100)]
-    public string Descricao { get; set; }
+    public string Descricao { get; set; } = null!;
+
+    public string? PessoaNome { get; set; }
 }
 
-public class TarefaEditarViewModel : TarefaCadastrarViewModel
+public class TarefaEditarViewModel : TarefaCadastroViewModel
 {
+    public TarefaEditarViewModel()
+    {
+    }
+
+    public TarefaEditarViewModel(Tarefa tarefa)
+    {
+        Id = tarefa.Id;
+        Descricao = tarefa.Descricao;
+        PessoaId = tarefa.PessoaId;
+        PessoaNome = tarefa.Pessoa.Nome;
+    }
+
     public Guid Id { get; set; }
 }
 
 public class TarefaDetalhesViewModel : TarefaEditarViewModel
 {
+    public TarefaDetalhesViewModel()
+    {
+    }
+
+    public TarefaDetalhesViewModel(Tarefa tarefa) : base(tarefa)
+    {
+        RealizadoEm = tarefa.RealizadoEm;
+    }
+
     public DateTime? RealizadoEm { get; set; }
-    public PessoaEditarViewModel Pessoa { get; set; }
 }
 
-public class SubtarefaCadastrarViewModel
+public class SubtarefaCadastroViewModel
 {
-    [Display(Name = "Tarefa")] 
-    public Guid TarefaId { get; set; }
+    [Display(Name = "Tarefa")] public Guid TarefaId { get; set; }
 
     [Display(Name = "Descrição"), Required]
     public string Descricao { get; set; }
 }
 
-public class SubtarefaEditarViewModel : SubtarefaCadastrarViewModel
+public class SubtarefaEditarViewModel : SubtarefaCadastroViewModel
 {
     public Guid Id { get; set; }
 }
