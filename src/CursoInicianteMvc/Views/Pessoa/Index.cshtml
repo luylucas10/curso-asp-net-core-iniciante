@@ -1,21 +1,15 @@
 @{
+    ViewData["Title"] = "Pessoas Cadastradas";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Pessoas";
 }
 
 @section Styles { <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.min.css"> }
 
 @section Scripts
 {
-    <script type="text/javascript" src="lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
-    <script type="text/javascript" src="lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
-    <script>
-    function btnAcoes(id){
-        const urlDetalhes = $("input#url-detalhes").val();
-        return `<a href="${urlDetalhes.concat("/").concat(id)}" class="btn btn-primary">Detalhes</a>` 
-    }
-    
-    </script>
+    <script type="text/javascript" src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="~/lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
+    <script type="text/javascript" src="~/js/pessoa.index.js" asp-append-version="true"></script>
 }
 
 <input type="hidden" id="url-detalhes" value="@Url.Action("Details")">

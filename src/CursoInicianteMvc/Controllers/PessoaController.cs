@@ -11,12 +11,14 @@ namespace CursoInicianteMvc.Controllers
 
         public PessoaController(CursoInicianteContexto context) => _context = context;
 
+        [HttpGet]
         public ViewResult Index() => View();
 
+        [HttpGet]
         public async Task<JsonResult> Search(Filter filtro)
         {
             filtro.PreparePagination();
-            
+
             var consulta = _context
                 .Pessoa
                 .Include(x => x.Tarefas)
@@ -55,44 +57,48 @@ namespace CursoInicianteMvc.Controllers
             return new JsonResult(new { rows, total });
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var pessoa = await _context.Pessoa.FirstOrDefaultAsync(m => m.Id == id);
+            var pessoa = await _context.Pessoa.FindAsync(id);
 
             if (pessoa == null)
                 return NotFound();
 
-            return View(pessoa);
+            return View(new PessoaEditarViewModel
+            {
+                Id = pessoa.Id,
+                Nome = pessoa.Nome,
+                Email = pessoa.Email,
+                Celular = pessoa.Celular
+            });
         }
 
+        [HttpGet]
         public ViewResult Create() => View();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PessoaCadastroViewModel novaPessoa)
+        public async Task<IActionResult> Create(PessoaCadastroViewModel nova)
         {
-            if (ModelState.IsValid)
-            {
-                var pessoa = new Pessoa()
-                {
-                    Id = Guid.NewGuid(), Nome = novaPessoa.Nome, Email = novaPessoa.Email, Celular = novaPessoa.Celular
-                };
-                _context.Add(pessoa);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            if (!ModelState.IsValid)
+                return View(nova);
 
-            return View(novaPessoa);
+            var pessoa = new Pessoa
+            {
+                Id = Guid.NewGuid(),
+                Nome = nova.Nome,
+                Email = nova.Email,
+                Celular = nova.Celular
+            };
+            _context.Add(pessoa);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Details", new { pessoa.Id });
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null)
-                return NotFound();
-
             var pessoa = await _context.Pessoa.FindAsync(id);
 
             if (pessoa == null)
@@ -106,74 +112,47 @@ namespace CursoInicianteMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Nome,Email,Celular")] PessoaEditarViewModel pessoa)
         {
-            if (id != pessoa.Id)
+            if (!ModelState.IsValid)
+                return View(pessoa);
+
+            var entidade = await _context.Pessoa.FindAsync(pessoa.Id);
+
+            if (id != pessoa.Id || entidade == null)
                 return NotFound();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var entidade = await _context.Pessoa.FindAsync(pessoa.Id);
-                    entidade.Nome = pessoa.Nome;
-                    entidade.Email = pessoa.Email;
-                    entidade.Celular = pessoa.Celular;
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PessoaExists(pessoa.Id))
-                        return NotFound();
-                    throw;
-                }
+            entidade.Nome = pessoa.Nome;
+            entidade.Email = pessoa.Email;
+            entidade.Celular = pessoa.Celular;
+            await _context.SaveChangesAsync();
 
-                return RedirectToAction("Details", new { pessoa.Id });
-            }
-
-            return View(pessoa);
+            return RedirectToAction("Details", new { pessoa.Id });
         }
 
-        // GET: Pessoa/Delete/5
+        [HttpGet]
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null || _context.Pessoa == null)
-            {
-                return NotFound();
-            }
+            var pessoa = await _context.Pessoa.FindAsync(id);
 
-            var pessoa = await _context.Pessoa
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (pessoa == null)
-            {
+            if (id == null || pessoa == null)
                 return NotFound();
-            }
 
             return View(new PessoaEditarViewModel
-                { Id = pessoa.Id, Nome = pessoa.Nome, Email = pessoa.Email, Celular = pessoa.Celular });
+            {
+                Id = pessoa.Id,
+                Nome = pessoa.Nome,
+                Email = pessoa.Email,
+                Celular = pessoa.Celular
+            });
         }
 
-        // POST: Pessoa/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (_context.Pessoa == null)
-            {
-                return Problem("Entity set 'CursoInicianteContexto.Pessoa'  is null.");
-            }
-
             var pessoa = await _context.Pessoa.FindAsync(id);
-            if (pessoa != null)
-            {
-                _context.Pessoa.Remove(pessoa);
-            }
-
+            if (pessoa != null) _context.Pessoa.Remove(pessoa);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool PessoaExists(Guid id)
-        {
-            return (_context.Pessoa?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

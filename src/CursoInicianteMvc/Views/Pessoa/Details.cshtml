@@ -1,7 +1,7 @@
-@model CursoInicianteMvc.Models.Pessoa
+@model CursoInicianteMvc.Models.PessoaEditarViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes de Pessoa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,96 +11,72 @@
 {
     <script type="text/javascript" src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
     <script type="text/javascript" src="~/lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
-    <script>
-    function btnAcoes(id, row){
-        const urlDetalhes = $("input#url-tarefa-detalhes");
-        
-        let html = `<a href="${urlDetalhes.val().concat("/").concat(id)}" class="btn btn-primary">Detalhes</a>`
-        
-        if (!row.realizadoEm)        
-        {
-            const urlEditar = $("input#url-tarefa-editar");
-            const urlExcluir = $("input#url-tarefa-excluir");
-            html += `
-                <a href="${urlEditar.val().concat("/").concat(id)}" class="btn btn-info">Editar</a>
-                <a href="${urlExcluir.val().concat("/").concat(id)}" class="btn btn-danger">Excluir</a>
-            `
-        }
-        
-        return html;
-    }
-    
-    function formatarData(id){
-        if (id)
-            return new Date(id).toLocaleDateString();
-        return "Não realizada ainda";
-    }
-    </script>
+    <script type="text/javascript" src="~/js/pessoa.details.js" asp-append-version="true"></script>
 }
 
 <input type="hidden" id="url-tarefa-editar" value="@Url.Action("Edit", "Tarefa")">
 <input type="hidden" id="url-tarefa-detalhes" value="@Url.Action("Details", "Tarefa")">
 <input type="hidden" id="url-tarefa-excluir" value="@Url.Action("Delete", "Tarefa")">
 
-
 <div class="row">
     <div class="col-12">
         <div class="card">
-                <div class="card-header d-flex py-3">
-                    <div class="card-title flex-grow-1">
-                        <h4>Detalhes: @Model.Nome</h4>
-                    </div>
-                    <div class="mx-1">
-                        <a asp-action="Delete" asp-controller="Pessoa" asp-route-id="@Model?.Id" class="btn btn-danger">Excluir</a>
-                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a>
-                        
-                    </div>
+            <div class="card-header d-flex pt-3">
+                <div class="card-title flex-grow-1">
+                    <h4>Detalhes da Pessoa</h4>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label asp-for="Nome" class="form-label"></label>
-                                <input asp-for="Nome" class="form-control-plaintext" readonly="readonly"/>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label asp-for="Email" class="form-label"></label>
-                                <input asp-for="Email" class="form-control-plaintext" readonly="readonly"/>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="form-group">
-                                <label asp-for="Celular" class="form-label"></label>
-                                <input asp-for="Celular" class="form-control-plaintext" readonly="readonly"/>
-                            </div>
-                        </div>
-                    </div>
-        
+                <div class="mx-1">
+                    <a asp-action="Delete" asp-controller="Pessoa" asp-route-id="@Model?.Id" class="btn btn-danger">Excluir</a>
                 </div>
-                <div class="card-body">
-                    <table
-                        class="table"
-                        data-toggle="table"
-                        data-url="@Url.Action("Search", "Tarefa", new { pessoaId = Model.Id })"
-                        data-pagination="true"
-                        data-side-pagination="server"
-                        data-locale="pt-BR"
-                        data-search="true">
-                        <thead>
-                        <th data-title="Descrição" data-field="descricao" data-sortable="true" data-sort-name="Descricao"></th>
-                        <th data-title="Realizado Em" data-field="realizadoEm" data-sortable="true" data-sort-name="RealizadoEm" data-formatter="formatarData"></th>
-                        <th data-title="Qnt. Sub-Tarefas" data-field="qntSubtarefas" data-sortable="false" data-align="center"></th>
-                        <th data-title="Qnt. Sub-Tarefas Realizadas" data-field="qntSubtarefasConcluidas" data-sortable="false" data-align="center"></th>
-                        <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
-                        </thead>
-                    </table>
-                </div>
-                <div class="card-footer d-flex">
-                    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
-                    <a asp-controller="Tarefa" asp-action="Create" asp-route-pessoaId="@Model.Id" class="btn btn-info ms-auto">Adicionar Tarefa</a>
+                <div class="mx-1">
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Nome" class="form-label"></label>
+                            <input asp-for="Nome" class="form-control" readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="Celular" class="form-label"></label>
+                            <input asp-for="Celular" class="form-control" readonly="readonly"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <table
+                    class="table"
+                    data-toggle="table"
+                    data-url="@Url.Action("Search", "Tarefa", new { pessoaId = Model.Id })"
+                    data-pagination="true"
+                    data-side-pagination="server"
+                    data-locale="pt-BR"
+                    data-search="true">
+                    <thead>
+                    <th data-title="Descrição" data-field="descricao" data-sortable="true" data-sort-name="Descricao"></th>
+                    <th data-title="Realizado Em" data-field="realizadoEm" data-sortable="true" data-sort-name="RealizadoEm" data-formatter="formatarData"></th>
+                    <th data-title="Qnt. Sub-Tarefas" data-field="qntSubtarefas" data-sortable="false" data-align="center"></th>
+                    <th data-title="Qnt. Sub-Tarefas Realizadas" data-field="qntSubtarefasConcluidas" data-sortable="false" data-align="center"></th>
+                    <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
+                    </thead>
+                </table>
+            </div>
+            <div class="card-footer d-flex">
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+                <a asp-controller="Tarefa" asp-action="Create" asp-route-pessoaId="@Model.Id" class="btn btn-info ms-auto">Adicionar Tarefa</a>
+            </div>
+        </div>
     </div>
 </div>
