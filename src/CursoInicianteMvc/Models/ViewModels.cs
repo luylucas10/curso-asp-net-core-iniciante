@@ -40,6 +40,12 @@ public class TarefaEditarViewModel : TarefaCadastrarViewModel
     public Guid Id { get; set; }
 }
 
+public class TarefaDetalhesViewModel : TarefaEditarViewModel
+{
+    public DateTime? RealizadoEm { get; set; }
+    public PessoaEditarViewModel Pessoa { get; set; }
+}
+
 public class SubtarefaCadastrarViewModel
 {
     [Display(Name = "Tarefa")] 
@@ -52,6 +58,12 @@ public class SubtarefaCadastrarViewModel
 public class SubtarefaEditarViewModel : SubtarefaCadastrarViewModel
 {
     public Guid Id { get; set; }
+}
+
+public class SubtarefaDetalhesViewModel : SubtarefaEditarViewModel
+{
+    public DateTime? RealizadoEm { get; set; }
+    public TarefaDetalhesViewModel Tarefa { get; set; }
 }
 
 public class InicioViewModel

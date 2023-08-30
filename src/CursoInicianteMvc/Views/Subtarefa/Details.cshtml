@@ -1,4 +1,4 @@
-@model CursoInicianteMvc.Models.Subtarefa
+@model CursoInicianteMvc.Models.SubtarefaDetalhesViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -6,46 +6,52 @@
 }
 
 <div class="row">
-    <div class="card">
-        <div class="card-header d-flex py-3">
-            <div class="card-title flex-grow-1">
-                <h4>Detalhes: @Model.Descricao</h4>
-            </div>
-            @{
-                if (!Model.RealizadoEm.HasValue)
-                {
-                    <form asp-controller="Subtarefa" asp-action="Concluir" method="post">
-                        <input type="hidden" asp-for="Id">
-                        <button class="mx-1 btn btn-primary">Concluir</button>
-                    </form>
-                    <a asp-action="Edit" asp-route-id="@Model?.Id" class=" btn btn-primary">Edit</a>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex py-3">
+                <div class="card-title flex-grow-1">
+                    <h4>Detalhes da subtarefa: @Model.Descricao</h4>
+                </div>
+
+                @{
+                    if (!Model.RealizadoEm.HasValue)
+                    {
+                        <div class="mx-1"><a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Excluir</a></div>
+                        <div class="mx-1">
+                            <form asp-controller="Subtarefa" asp-action="Concluir" method="post">
+                                <input type="hidden" asp-for="Id">
+                                <button class="mx-1 btn btn-primary">Concluir</button>
+                            </form>
+                        </div>
+                        <div class="mx-1"><a asp-action="Edit" asp-route-id="@Model?.Id" class=" btn btn-primary">Editar</a></div>
+                    }
                 }
-            }
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    <div class="form-group">
-                        <label asp-for="TarefaId" class="form-label"></label>
-                        <textarea asp-for="Tarefa.Descricao" class="form-control-plaintext" readonly="readonly"></textarea>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="TarefaId" class="form-label"></label>
+                            <textarea asp-for="Tarefa.Descricao" class="form-control-plaintext" readonly="readonly"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <div class="form-group">
-                        <label asp-for="Descricao" class="form-label"></label>
-                        <textarea asp-for="Descricao" class="form-control-plaintext" readonly="readonly"></textarea>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="Descricao" class="form-label"></label>
+                            <textarea asp-for="Descricao" class="form-control-plaintext" readonly="readonly"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="col-4">
-                    <div class="form-group">
-                        <label asp-for="RealizadoEm" class="form-label"></label>
-                        <input asp-for="RealizadoEm" class="form-control-plaintext" readonly="readonly"/>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label asp-for="RealizadoEm" class="form-label"></label>
+                            <input asp-for="RealizadoEm" class="form-control-plaintext" readonly="readonly"/>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="card-footer">
-            <a asp-controller="Tarefa" asp-action="Details" asp-route-id="@Model.TarefaId" class="btn btn-secondary">Voltar</a>
+            <div class="card-footer">
+                <a asp-controller="Tarefa" asp-action="Details" asp-route-id="@Model.TarefaId" class="btn btn-secondary">Voltar</a>
+            </div>
         </div>
     </div>
 </div>

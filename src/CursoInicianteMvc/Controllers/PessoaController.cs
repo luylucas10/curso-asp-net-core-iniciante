@@ -128,7 +128,7 @@ namespace CursoInicianteMvc.Controllers
                     throw;
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new {pessoa.Id});
             }
 
             return View(pessoa);

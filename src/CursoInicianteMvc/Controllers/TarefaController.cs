@@ -69,7 +69,18 @@ namespace CursoInicianteMvc.Controllers
             if (tarefa == null)
                 return NotFound();
 
-            return View(tarefa);
+            return View(new TarefaDetalhesViewModel()
+            {
+                Id = tarefa.Id,
+                PessoaId = tarefa.PessoaId,
+                Descricao = tarefa.Descricao,
+                RealizadoEm = tarefa.RealizadoEm,
+                Pessoa = new PessoaEditarViewModel()
+                {
+                    Nome = tarefa.Pessoa.Nome
+                }
+                
+            });
         }
 
         [HttpGet]
@@ -125,9 +136,7 @@ namespace CursoInicianteMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id,
-            [Bind("Id,PessoaId,Descricao,RealizadoEm")]
-            TarefaEditarViewModel tarefa)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,PessoaId,Descricao,RealizadoEm")] TarefaEditarViewModel tarefa)
         {
             if (id != tarefa.Id)
                 return NotFound();
@@ -188,7 +197,16 @@ namespace CursoInicianteMvc.Controllers
             if (tarefa == null)
                 return NotFound();
 
-            return View(tarefa);
+            return View(new TarefaDetalhesViewModel()
+            {
+                Id = tarefa.Id,
+                Descricao = tarefa.Descricao,
+                RealizadoEm = tarefa.RealizadoEm,
+                Pessoa = new PessoaEditarViewModel()
+                {
+                    Nome = tarefa.Pessoa.Nome
+                }
+            });
         }
 
         [HttpPost, ActionName("Delete")]

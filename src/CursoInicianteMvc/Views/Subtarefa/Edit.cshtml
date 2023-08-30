@@ -10,42 +10,45 @@
 }
 
 <div class="row">
-    <div class="card">
-        <form asp-action="Edit" method="post">
-            <div class="card-header py-3">
-                <div class="card-title">
-                    <h4>Editar Sub-Tarefa</h4>
-                </div>
-            </div>
-            <div class="card-body">
-                <div asp-validation-summary="All" class="text-danger"></div>
-                <input type="hidden" asp-for="@Model.Id">
-                <input type="hidden" asp-for="@Model.TarefaId">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="TarefaId" class="form-label"></label>
-                            <select class="form-control" asp-items="ViewBag.TarefaId" disabled="disabled"></select>
-                            <span asp-validation-for="TarefaId" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label asp-for="Descricao" class="form-label"></label>
-                            <textarea asp-for="Descricao" class="form-control"></textarea>
-                            <span asp-validation-for="Descricao" class="text-danger"></span>
-                        </div>
+    <div class="col-12">
+        <div class="card">
+            <form asp-action="Edit" method="post">
+                <div class="card-header py-3">
+                    <div class="card-title">
+                        <h4>Editar Sub-Tarefa</h4>
                     </div>
                 </div>
-            </div>
-            <div class="card-footer d-flex">
-                <div>
-                    <a class="btn btn-secondary" asp-controller="Tarefa" asp-action="Details" asp-route-id="@Model.TarefaId">Voltar</a>
+                <div class="card-body">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <input type="hidden" asp-for="@Model.Id">
+                    <input type="hidden" asp-for="@Model.TarefaId">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="TarefaId" class="form-label"></label>
+                                <select class="form-control" asp-items="ViewBag.TarefaId" disabled="disabled"></select>
+                                <span asp-validation-for="TarefaId" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label asp-for="Descricao" class="form-label"></label>
+                                <textarea asp-for="Descricao" class="form-control"></textarea>
+                                <span asp-validation-for="Descricao" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="ms-auto">
-                    <button type="submit" class="btn btn-primary">Atualizar</button>
+                <div class="card-footer d-flex">
+                    <div>
+                        <a class="btn btn-secondary" asp-controller="Tarefa" asp-action="Details" asp-route-id="@Model.TarefaId">Voltar</a>
+                    </div>
+                    <div class="ms-auto">
+                        <button type="submit" class="btn btn-primary">Atualizar</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
+
 </div>

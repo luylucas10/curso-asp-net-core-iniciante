@@ -37,7 +37,7 @@ namespace CursoInicianteMvc.Controllers
                 "RealizadoEm" when order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
                 "RealizadoEm" when order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
                 "Descricao" when order == "desc" => consulta.OrderByDescending(x => x.Descricao),
-                _ => consulta.OrderBy(x => x.Descricao)
+                _ => consulta.OrderBy(x => x.Descricao).ThenBy(x => x.RealizadoEm)
             };
 
             var rows = await consulta
@@ -67,7 +67,17 @@ namespace CursoInicianteMvc.Controllers
                 return NotFound();
             }
 
-            return View(subtarefa);
+            return View(new SubtarefaDetalhesViewModel()
+            {
+                Id = subtarefa.Id,
+                TarefaId = subtarefa.TarefaId,
+                Descricao = subtarefa.Descricao,
+                RealizadoEm = subtarefa.RealizadoEm,
+                Tarefa = new TarefaDetalhesViewModel()
+                {
+                    Descricao = subtarefa.Tarefa.Descricao
+                }
+            });
         }
 
         public IActionResult Create(Guid tarefaId)
@@ -167,7 +177,12 @@ namespace CursoInicianteMvc.Controllers
                 return NotFound();
             }
 
-            return View(subtarefa);
+            return View(new SubtarefaDetalhesViewModel { 
+                    TarefaId = subtarefa.TarefaId,
+                    Descricao = subtarefa.Descricao, 
+                    Id = subtarefa.Id,
+                    Tarefa = new TarefaDetalhesViewModel(){Descricao = subtarefa.Tarefa.Descricao}
+            });
         }
 
         // POST: Subtarefa/Delete/5

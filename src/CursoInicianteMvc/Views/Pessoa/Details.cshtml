@@ -50,8 +50,11 @@
                     <div class="card-title flex-grow-1">
                         <h4>Detalhes: @Model.Nome</h4>
                     </div>
-                    <a asp-action="Delete" asp-controller="Pessoa" asp-route-id="@Model?.Id" class="mx-1 btn btn-danger">Excluir</a>
-                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a>
+                    <div class="mx-1">
+                        <a asp-action="Delete" asp-controller="Pessoa" asp-route-id="@Model?.Id" class="btn btn-danger">Excluir</a>
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Editar</a>
+                        
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">

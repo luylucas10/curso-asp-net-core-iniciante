@@ -1,40 +1,83 @@
-@model CursoInicianteMvc.Models.Tarefa
+@model CursoInicianteMvc.Models.TarefaDetalhesViewModel
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Excluir";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Delete</h1>
+@section Styles{ <link rel="stylesheet" href="~/lib/bootstrap-table/dist/bootstrap-table.min.css"> }
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Tarefa</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RealizadoEm)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RealizadoEm)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Pessoa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Pessoa.Id)
-        </dd>
-    </dl>
+@section Scripts
+{
+    <script type="text/javascript" src="~/lib/bootstrap-table/dist/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="~/lib/bootstrap-table/dist/locale/bootstrap-table-pt-BR.min.js"></script>
+    <script>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+    function formatarData(id){
+        if (id)
+            return new Date(id).toLocaleDateString();
+        return "Não realizada ainda";
+    }
+    </script>
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex py-3">
+                <div class="card-title flex-grow-1">
+                    <h4>Excluir Tarefa: @Model.Descricao</h4>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="PessoaId" class="form-label"></label>
+                            <input asp-for="Pessoa.Nome" class="form-control-plaintext" readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label asp-for="RealizadoEm" class="form-label"></label>
+                            <input asp-for="RealizadoEm" class="form-control-plaintext" readonly="readonly"/>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <h5 class="text-danger">As subtarefas serão excluídas juntamente com a tarefa</h5>
+                <table
+                    class="table"
+                    data-toggle="table"
+                    data-url="@Url.Action("Search", "Subtarefa", new { tarefaId = Model.Id })"
+                    data-pagination="true"
+                    data-side-pagination="server"
+                    data-locale="pt-BR"
+                    data-search="true">
+                    <thead>
+                    <th data-title="Descrição" data-field="descricao" data-sortable="true" data-sort-name="Descricao"></th>
+                    <th data-title="Realizado Em" data-field="realizadoEm" data-sortable="true" data-sort-name="RealizadoEm" data-formatter="formatarData"></th>
+                    <th data-title="#" data-field="id" data-formatter="btnAcoes" data-align="center"></th>
+                    </thead>
+                </table>
+            </div>
+            <div class="card-footer d-flex">
+                <div>
+                    <a asp-controller="Tarefa" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Voltar</a>
+                </div>
+                @if (!Model.RealizadoEm.HasValue)
+                {
+                    <div class="ms-auto">
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="Id"/>
+                            <button class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
 </div>
