@@ -13,33 +13,31 @@ namespace CursoInicianteMvc.Controllers
 
         public ViewResult Index() => View();
 
-        public async Task<JsonResult> Search(int? limit, int? offset, string? search, string? sort, string? order)
+        public async Task<JsonResult> Search(Filter filtro)
         {
-            limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
-            offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
-
-
+            filtro.PreparePagination();
+            
             var consulta = _context
                 .Pessoa
                 .Include(x => x.Tarefas)
                 .AsQueryable()
                 .AsNoTracking();
 
-            if (!string.IsNullOrWhiteSpace(search))
+            if (!string.IsNullOrWhiteSpace(filtro.Search))
                 consulta = consulta.Where(x =>
-                    x.Nome.Contains(search)
-                    || x.Email.Contains(search)
-                    || x.Celular.Contains(search));
+                    x.Nome.Contains(filtro.Search)
+                    || x.Email.Contains(filtro.Search)
+                    || x.Celular.Contains(filtro.Search));
 
             var total = await consulta.CountAsync();
 
-            consulta = sort switch
+            consulta = filtro.Sort switch
             {
-                "Nome" when order == "desc" => consulta.OrderByDescending(x => x.Nome),
-                "Email" when order == "asc" => consulta.OrderBy(x => x.Email),
-                "Email" when order == "desc" => consulta.OrderByDescending(x => x.Email),
-                "Celular" when order == "asc" => consulta.OrderBy(x => x.Celular),
-                "Celular" when order == "desc" => consulta.OrderByDescending(x => x.Celular),
+                "Nome" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Nome),
+                "Email" when filtro.Order == "asc" => consulta.OrderBy(x => x.Email),
+                "Email" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Email),
+                "Celular" when filtro.Order == "asc" => consulta.OrderBy(x => x.Celular),
+                "Celular" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Celular),
                 _ => consulta.OrderBy(x => x.Nome)
             };
 
@@ -50,8 +48,8 @@ namespace CursoInicianteMvc.Controllers
                     qntTarefas = x.Tarefas.Count,
                     qntSubtarefas = x.Tarefas.SelectMany(x => x.Subtarefas).Count()
                 })
-                .Skip(offset.GetValueOrDefault())
-                .Take(limit.GetValueOrDefault())
+                .Skip(filtro.Offset.GetValueOrDefault())
+                .Take(filtro.Limit.GetValueOrDefault())
                 .ToListAsync();
 
             return new JsonResult(new { rows, total });
@@ -128,7 +126,7 @@ namespace CursoInicianteMvc.Controllers
                     throw;
                 }
 
-                return RedirectToAction("Details", new {pessoa.Id});
+                return RedirectToAction("Details", new { pessoa.Id });
             }
 
             return View(pessoa);

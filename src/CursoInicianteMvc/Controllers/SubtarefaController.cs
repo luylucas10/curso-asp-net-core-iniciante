@@ -15,28 +15,26 @@ namespace CursoInicianteMvc.Controllers
             _context = context;
         }
 
-        public async Task<JsonResult> Search(Guid? tarefaId, int? limit, int? offset, string? search, string? sort,
-            string? order)
+        public async Task<JsonResult> Search(SubtarefaFilter filtro)
         {
-            limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
-            offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
+            filtro.PreparePagination();
 
             var consulta = _context
                 .Subtarefa
                 .AsQueryable()
                 .AsNoTracking()
-                .Where(x => x.TarefaId == tarefaId);
+                .Where(x => x.TarefaId == filtro.TarefaId);
 
-            if (!string.IsNullOrWhiteSpace(search))
-                consulta = consulta.Where(x => x.Descricao.Contains(search));
+            if (!string.IsNullOrWhiteSpace(filtro.Search))
+                consulta = consulta.Where(x => x.Descricao.Contains(filtro.Search));
 
             var total = await consulta.CountAsync();
 
-            consulta = sort switch
+            consulta = filtro.Sort switch
             {
-                "RealizadoEm" when order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
-                "RealizadoEm" when order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
-                "Descricao" when order == "desc" => consulta.OrderByDescending(x => x.Descricao),
+                "RealizadoEm" when filtro.Order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
+                "RealizadoEm" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
+                "Descricao" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Descricao),
                 _ => consulta.OrderBy(x => x.Descricao).ThenBy(x => x.RealizadoEm)
             };
 
@@ -45,8 +43,8 @@ namespace CursoInicianteMvc.Controllers
                 {
                     x.Id, x.Descricao, x.RealizadoEm
                 })
-                .Skip(offset.GetValueOrDefault())
-                .Take(limit.GetValueOrDefault())
+                .Skip(filtro.Offset.GetValueOrDefault())
+                .Take(filtro.Limit.GetValueOrDefault())
                 .ToListAsync();
 
             return new JsonResult(new { rows, total });
@@ -177,11 +175,12 @@ namespace CursoInicianteMvc.Controllers
                 return NotFound();
             }
 
-            return View(new SubtarefaDetalhesViewModel { 
-                    TarefaId = subtarefa.TarefaId,
-                    Descricao = subtarefa.Descricao, 
-                    Id = subtarefa.Id,
-                    Tarefa = new TarefaDetalhesViewModel(){Descricao = subtarefa.Tarefa.Descricao}
+            return View(new SubtarefaDetalhesViewModel
+            {
+                TarefaId = subtarefa.TarefaId,
+                Descricao = subtarefa.Descricao,
+                Id = subtarefa.Id,
+                Tarefa = new TarefaDetalhesViewModel() { Descricao = subtarefa.Tarefa.Descricao }
             });
         }
 

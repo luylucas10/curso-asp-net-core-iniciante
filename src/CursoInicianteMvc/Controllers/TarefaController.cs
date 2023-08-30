@@ -14,31 +14,27 @@ namespace CursoInicianteMvc.Controllers
             _context = context;
 
         [HttpGet]
-        public async Task<JsonResult> Search(Guid? pessoaId, int? limit, int? offset, string? search, string? sort,
-            string? order)
+        public async Task<JsonResult> Search(TarefaFilter filtro)
         {
-            limit = limit.GetValueOrDefault(0) <= 0 ? 15 : limit;
-            offset = (offset.GetValueOrDefault(0) <= 0 ? 0 : offset - 1) * limit;
+            filtro.PreparePagination();
 
             var consulta = _context
                 .Tarefa
                 .Include(x => x.Subtarefas)
                 .AsQueryable()
-                .AsNoTracking();
+                .AsNoTracking()
+                .Where(x => x.PessoaId == filtro.PessoaId);
 
-            if (pessoaId.HasValue)
-                consulta = consulta.Where(x => x.PessoaId == pessoaId);
-
-            if (!string.IsNullOrWhiteSpace(search))
-                consulta = consulta.Where(x => x.Descricao.Contains(search));
+            if (!string.IsNullOrWhiteSpace(filtro.Search))
+                consulta = consulta.Where(x => x.Descricao.Contains(filtro.Search));
 
             var total = await consulta.CountAsync();
 
-            consulta = sort switch
+            consulta = filtro.Sort switch
             {
-                "RealizadoEm" when order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
-                "RealizadoEm" when order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
-                "Descricao" when order == "desc" => consulta.OrderByDescending(x => x.Descricao),
+                "RealizadoEm" when filtro.Order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
+                "RealizadoEm" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
+                "Descricao" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Descricao),
                 _ => consulta.OrderBy(x => x.Descricao)
             };
 
@@ -49,8 +45,8 @@ namespace CursoInicianteMvc.Controllers
                     qntSubtarefas = x.Subtarefas.Count,
                     qntSubtarefasConcluidas = x.Subtarefas.Count(a => a.RealizadoEm.HasValue)
                 })
-                .Skip(offset.GetValueOrDefault())
-                .Take(limit.GetValueOrDefault())
+                .Skip(filtro.Offset.GetValueOrDefault())
+                .Take(filtro.Limit.GetValueOrDefault())
                 .ToListAsync();
 
             return new JsonResult(new { rows, total });
@@ -79,7 +75,6 @@ namespace CursoInicianteMvc.Controllers
                 {
                     Nome = tarefa.Pessoa.Nome
                 }
-                
             });
         }
 
@@ -136,7 +131,8 @@ namespace CursoInicianteMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,PessoaId,Descricao,RealizadoEm")] TarefaEditarViewModel tarefa)
+        public async Task<IActionResult> Edit(Guid id,
+            [Bind("Id,PessoaId,Descricao,RealizadoEm")] TarefaEditarViewModel tarefa)
         {
             if (id != tarefa.Id)
                 return NotFound();
