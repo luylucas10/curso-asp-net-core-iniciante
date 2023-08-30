@@ -23,6 +23,16 @@ public class PessoaCadastroViewModel
 
 public class PessoaEditarViewModel : PessoaCadastroViewModel
 {
+    public PessoaEditarViewModel() { }
+
+    public PessoaEditarViewModel(Pessoa pessoa)
+    {
+        Id = pessoa.Id;
+        Nome = pessoa.Nome;
+        Email = pessoa.Email;
+        Celular = pessoa.Celular;
+    }
+
     public Guid Id { get; set; }
 }
 

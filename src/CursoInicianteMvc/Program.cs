@@ -1,4 +1,5 @@
 using CursoInicianteMvc.Data;
+using CursoInicianteMvc.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,9 @@ builder.Services.AddDbContext<CursoInicianteContexto>(o =>
     o.EnableDetailedErrors();
     o.EnableSensitiveDataLogging();
 });
+
+builder.Services.AddScoped<IPessoaRepository, PessoaRepository>();
+builder.Services.AddScoped<IPessoaService, PessoaService>();
 
 var app = builder.Build();
 
