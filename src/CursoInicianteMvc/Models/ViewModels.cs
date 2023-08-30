@@ -2,6 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CursoInicianteMvc.Models;
 
+public class InicioViewModel
+{
+    public int QuantidadePessoas { get; set; }
+    public int QuantidadeTarafas { get; set; }
+}
 public class ErrorViewModel
 {
     public string? RequestId { get; set; }
@@ -9,7 +14,7 @@ public class ErrorViewModel
     public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }
 
-public class PessoaCadastroViewModel
+public class PessoaCadastrarViewModel
 {
     [Required, MinLength(3), MaxLength(100)]
     public string Nome { get; set; }
@@ -21,7 +26,7 @@ public class PessoaCadastroViewModel
     public string? Celular { get; set; }
 }
 
-public class PessoaEditarViewModel : PessoaCadastroViewModel
+public class PessoaEditarViewModel : PessoaCadastrarViewModel
 {
     public PessoaEditarViewModel()
     {
@@ -38,13 +43,13 @@ public class PessoaEditarViewModel : PessoaCadastroViewModel
     public Guid Id { get; set; }
 }
 
-public class TarefaCadastroViewModel
+public class TarefaCadastrarViewModel
 {
-    public TarefaCadastroViewModel()
+    public TarefaCadastrarViewModel()
     {
     }
 
-    public TarefaCadastroViewModel(Pessoa pessoa)
+    public TarefaCadastrarViewModel(Pessoa pessoa)
     {
         PessoaId = pessoa.Id;
         PessoaNome = pessoa.Nome;
@@ -58,7 +63,7 @@ public class TarefaCadastroViewModel
     public string? PessoaNome { get; set; }
 }
 
-public class TarefaEditarViewModel : TarefaCadastroViewModel
+public class TarefaEditarViewModel : TarefaCadastrarViewModel
 {
     public TarefaEditarViewModel()
     {
@@ -75,13 +80,13 @@ public class TarefaEditarViewModel : TarefaCadastroViewModel
     public Guid Id { get; set; }
 }
 
-public class TarefaDetalhesViewModel : TarefaEditarViewModel
+public class TarefaDetalharViewModel : TarefaEditarViewModel
 {
-    public TarefaDetalhesViewModel()
+    public TarefaDetalharViewModel()
     {
     }
 
-    public TarefaDetalhesViewModel(Tarefa tarefa) : base(tarefa)
+    public TarefaDetalharViewModel(Tarefa tarefa) : base(tarefa)
     {
         RealizadoEm = tarefa.RealizadoEm;
     }
@@ -89,27 +94,51 @@ public class TarefaDetalhesViewModel : TarefaEditarViewModel
     public DateTime? RealizadoEm { get; set; }
 }
 
-public class SubtarefaCadastroViewModel
+public class SubtarefaCadastrarViewModel
 {
-    [Display(Name = "Tarefa")] public Guid TarefaId { get; set; }
+    public SubtarefaCadastrarViewModel()
+    {
+    }
 
-    [Display(Name = "Descrição"), Required]
+    public SubtarefaCadastrarViewModel(Tarefa tarefa)
+    {
+        TarefaId = tarefa.Id;
+        TarefaDescricao = tarefa.Descricao;
+    }
+
+    [Display(Name = "Tarefa")] 
+    public Guid TarefaId { get; set; }
+
+    [Required, Display(Name = "Descrição")]
     public string Descricao { get; set; }
+    public string? TarefaDescricao { get; set; }
 }
 
-public class SubtarefaEditarViewModel : SubtarefaCadastroViewModel
+public class SubtarefaEditarViewModel : SubtarefaCadastrarViewModel
 {
+    public SubtarefaEditarViewModel()
+    {
+    }
+    public SubtarefaEditarViewModel(Subtarefa subtarefa) : base(subtarefa.Tarefa)
+    {
+        Id = subtarefa.Id;
+        Descricao = subtarefa.Descricao;
+    }
+    
     public Guid Id { get; set; }
 }
 
-public class SubtarefaDetalhesViewModel : SubtarefaEditarViewModel
+public class SubtarefaDetalharViewModel : SubtarefaEditarViewModel
 {
+    public SubtarefaDetalharViewModel()
+    {
+    }
+
+    public SubtarefaDetalharViewModel(Subtarefa subtarefa): base(subtarefa)
+    {
+        RealizadoEm = subtarefa.RealizadoEm;
+    }
+    
     public DateTime? RealizadoEm { get; set; }
-    public TarefaDetalhesViewModel Tarefa { get; set; }
 }
 
-public class InicioViewModel
-{
-    public int QuantidadePessoas { get; set; }
-    public int QuantidadeTarafas { get; set; }
-}

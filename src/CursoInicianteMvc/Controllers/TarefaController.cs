@@ -37,7 +37,7 @@ namespace CursoInicianteMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(TarefaCadastroViewModel tarefa)
+        public async Task<IActionResult> Create(TarefaCadastrarViewModel tarefa)
         {
             if (!ModelState.IsValid)
             {

@@ -1,16 +1,16 @@
-@model CursoInicianteMvc.Models.SubtarefaDetalhesViewModel
+@model CursoInicianteMvc.Models.SubtarefaDetalharViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Subtarefa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header d-flex py-3">
+            <div class="card-header d-flex pt-3">
                 <div class="card-title flex-grow-1">
-                    <h4>Detalhes da subtarefa: @Model.Descricao</h4>
+                    <h4>Detalhes da subtarefa</h4>
                 </div>
 
                 @{
@@ -18,7 +18,7 @@
                     {
                         <div class="mx-1"><a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-danger">Excluir</a></div>
                         <div class="mx-1">
-                            <form asp-controller="Subtarefa" asp-action="Concluir" method="post">
+                            <form asp-controller="Subtarefa" asp-action="Finish" method="post">
                                 <input type="hidden" asp-for="Id">
                                 <button class="mx-1 btn btn-primary">Concluir</button>
                             </form>
@@ -28,23 +28,23 @@
                 }
             </div>
             <div class="card-body">
-                <div class="row">
+                <div class="row gap-3">
                     <div class="col-12">
                         <div class="form-group">
                             <label asp-for="TarefaId" class="form-label"></label>
-                            <textarea asp-for="Tarefa.Descricao" class="form-control-plaintext" readonly="readonly"></textarea>
+                            <textarea asp-for="TarefaDescricao" class="form-control" disabled="disabled" readonly="readonly"></textarea>
                         </div>
                     </div>
                     <div class="col-12">
                         <div class="form-group">
                             <label asp-for="Descricao" class="form-label"></label>
-                            <textarea asp-for="Descricao" class="form-control-plaintext" readonly="readonly"></textarea>
+                            <textarea asp-for="Descricao" class="form-control" readonly="readonly"></textarea>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <label asp-for="RealizadoEm" class="form-label"></label>
-                            <input asp-for="RealizadoEm" class="form-control-plaintext" readonly="readonly"/>
+                            <input asp-for="RealizadoEm" class="form-control" readonly="readonly"/>
                         </div>
                     </div>
                 </div>

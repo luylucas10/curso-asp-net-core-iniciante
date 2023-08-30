@@ -7,11 +7,11 @@ namespace CursoInicianteMvc.Services;
 
 public interface ITarefaService
 {
-    Task<TarefaCadastroViewModel?> FindCreate(Guid pessoaId);
+    Task<TarefaCadastrarViewModel?> FindCreate(Guid pessoaId);
     Task<TarefaEditarViewModel?> FindEdit(Guid id);
-    Task<TarefaDetalhesViewModel?> FindDetails(Guid id);
+    Task<TarefaDetalharViewModel?> FindDetails(Guid id);
     Task<Tuple<int, IEnumerable>> Search(TarefaFilter filtro);
-    Task<Guid> Create(TarefaCadastroViewModel tarefa);
+    Task<Guid> Create(TarefaCadastrarViewModel tarefa);
     Task Edit(TarefaEditarViewModel tarefa);
     Task Delete(Guid id);
     Task Finish(Guid id);
@@ -28,15 +28,15 @@ public class TarefaService : ITarefaService
         _pessoaRepository = pessoaRepository;
     }
 
-    public async Task<TarefaCadastroViewModel?> FindCreate(Guid pessoaId)
+    public async Task<TarefaCadastrarViewModel?> FindCreate(Guid pessoaId)
     {
         var pessoa = await _pessoaRepository.Find(pessoaId);
-        return new TarefaCadastroViewModel(pessoa);
+        return new TarefaCadastrarViewModel(pessoa);
     }
-    public async Task<TarefaDetalhesViewModel?> FindDetails(Guid id)
+    public async Task<TarefaDetalharViewModel?> FindDetails(Guid id)
     {
         var tarefa = await _repository.Find(id);
-        return tarefa != null ? new TarefaDetalhesViewModel(tarefa) : null;
+        return tarefa != null ? new TarefaDetalharViewModel(tarefa) : null;
     }
     
     public async Task<TarefaEditarViewModel?> FindEdit(Guid id)
@@ -48,7 +48,7 @@ public class TarefaService : ITarefaService
     public Task<Tuple<int, IEnumerable>> Search(TarefaFilter filtro) =>
         _repository.Search(filtro);
 
-    public async Task<Guid> Create(TarefaCadastroViewModel tarefa)
+    public async Task<Guid> Create(TarefaCadastrarViewModel tarefa)
     {
         var tarefaEntidade = new Tarefa
         {

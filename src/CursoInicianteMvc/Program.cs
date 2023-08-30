@@ -19,6 +19,9 @@ builder.Services.AddScoped<IPessoaService, PessoaService>();
 builder.Services.AddScoped<ITarefaRepository, TarefaRepository>();
 builder.Services.AddScoped<ITarefaService, TarefaService>();
 
+builder.Services.AddScoped<ISubtarefaService, SubtarefaService>();
+builder.Services.AddScoped<ISubtarefaRepository, SubtarefaRepository>();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

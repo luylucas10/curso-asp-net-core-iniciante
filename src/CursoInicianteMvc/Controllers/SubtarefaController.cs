@@ -1,226 +1,83 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CursoInicianteMvc.Data;
 using CursoInicianteMvc.Models;
+using CursoInicianteMvc.Services;
 
 namespace CursoInicianteMvc.Controllers
 {
     public class SubtarefaController : Controller
     {
-        private readonly CursoInicianteContexto _context;
+        private readonly ISubtarefaService _subtarefaService;
 
-        public SubtarefaController(CursoInicianteContexto context)
-        {
-            _context = context;
-        }
+        public SubtarefaController(ISubtarefaService subtarefaService) =>
+            _subtarefaService = subtarefaService;
 
+        [HttpGet]
         public async Task<JsonResult> Search(SubtarefaFilter filtro)
         {
-            filtro.PreparePagination();
-
-            var consulta = _context
-                .Subtarefa
-                .AsQueryable()
-                .AsNoTracking()
-                .Where(x => x.TarefaId == filtro.TarefaId);
-
-            if (!string.IsNullOrWhiteSpace(filtro.Search))
-                consulta = consulta.Where(x => x.Descricao.Contains(filtro.Search));
-
-            var total = await consulta.CountAsync();
-
-            consulta = filtro.Sort switch
-            {
-                "RealizadoEm" when filtro.Order == "asc" => consulta.OrderBy(x => x.RealizadoEm),
-                "RealizadoEm" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.RealizadoEm),
-                "Descricao" when filtro.Order == "desc" => consulta.OrderByDescending(x => x.Descricao),
-                _ => consulta.OrderBy(x => x.Descricao).ThenBy(x => x.RealizadoEm)
-            };
-
-            var rows = await consulta
-                .Select(x => new
-                {
-                    x.Id, x.Descricao, x.RealizadoEm
-                })
-                .Skip(filtro.Offset.GetValueOrDefault())
-                .Take(filtro.Limit.GetValueOrDefault())
-                .ToListAsync();
-
-            return new JsonResult(new { rows, total });
+            var resultado = await _subtarefaService.Search(filtro);
+            return new JsonResult(new { rows = resultado.Item2, total = resultado.Item1 });
         }
 
+        [HttpGet]
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null || _context.Subtarefa == null)
-            {
-                return NotFound();
-            }
-
-            var subtarefa = await _context.Subtarefa
-                .Include(s => s.Tarefa)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (subtarefa == null)
-            {
-                return NotFound();
-            }
-
-            return View(new SubtarefaDetalhesViewModel()
-            {
-                Id = subtarefa.Id,
-                TarefaId = subtarefa.TarefaId,
-                Descricao = subtarefa.Descricao,
-                RealizadoEm = subtarefa.RealizadoEm,
-                Tarefa = new TarefaDetalhesViewModel
-                {
-                    Descricao = subtarefa.Tarefa.Descricao
-                }
-            });
-        }
-
-        public IActionResult Create(Guid tarefaId)
-        {
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), tarefaId);
-            return View(new SubtarefaCadastroViewModel() { TarefaId = tarefaId });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TarefaId,Descricao")] SubtarefaCadastroViewModel subtarefa)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(new Subtarefa
-                {
-                    Id = Guid.NewGuid(),
-                    TarefaId = subtarefa.TarefaId,
-                    Descricao = subtarefa.Descricao
-                });
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Tarefa", new { Id = subtarefa.TarefaId });
-            }
-
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), subtarefa.TarefaId);
+            var subtarefa = await _subtarefaService.FindDetails(id.GetValueOrDefault());
+            if (subtarefa == null) return NotFound();
             return View(subtarefa);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Create(Guid tarefaId) =>
+            View(await _subtarefaService.FindCreate(tarefaId));
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(SubtarefaCadastrarViewModel subtarefa)
+        {
+            if (!ModelState.IsValid) return View(await _subtarefaService.FindCreate(subtarefa.TarefaId));
+            var id = await _subtarefaService.Create(subtarefa);
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null || _context.Subtarefa == null)
-            {
-                return NotFound();
-            }
-
-            var subtarefa = await _context.Subtarefa.FindAsync(id);
-            if (subtarefa == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), subtarefa.TarefaId);
-            return View(new SubtarefaEditarViewModel
-                { TarefaId = subtarefa.TarefaId, Descricao = subtarefa.Descricao, Id = subtarefa.Id });
-        }
-
-        // POST: Subtarefa/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id,
-            [Bind("Id,TarefaId,Descricao,RealizadoEm")]
-            SubtarefaEditarViewModel subtarefa)
-        {
-            if (id != subtarefa.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var entidade = await _context.Subtarefa.FindAsync(subtarefa.Id);
-                    entidade.Descricao = subtarefa.Descricao;
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SubtarefaExists(subtarefa.Id))
-                        return NotFound();
-                    throw;
-                }
-
-                return RedirectToAction("Details", "Tarefa", new { Id = subtarefa.TarefaId });
-            }
-
-            ViewData["TarefaId"] = new SelectList(_context.Tarefa, "Id", nameof(Tarefa.Descricao), subtarefa.TarefaId);
+            var subtarefa = await _subtarefaService.FindEdit(id.GetValueOrDefault());
+            if (subtarefa == null) return NotFound();
             return View(subtarefa);
         }
 
-        // GET: Subtarefa/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(SubtarefaEditarViewModel subtarefa)
         {
-            if (id == null || _context.Subtarefa == null)
-            {
-                return NotFound();
-            }
-
-            var subtarefa = await _context.Subtarefa
-                .Include(s => s.Tarefa)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (subtarefa == null)
-            {
-                return NotFound();
-            }
-
-            return View(new SubtarefaDetalhesViewModel
-            {
-                TarefaId = subtarefa.TarefaId,
-                Descricao = subtarefa.Descricao,
-                Id = subtarefa.Id,
-                Tarefa = new TarefaDetalhesViewModel() { Descricao = subtarefa.Tarefa.Descricao }
-            });
+            if (!ModelState.IsValid) return View(await _subtarefaService.FindEdit(subtarefa.Id));
+            await _subtarefaService.Edit(subtarefa);
+            return RedirectToAction(nameof(Details), new { subtarefa.Id });
         }
 
-        // POST: Subtarefa/Delete/5
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+            var subtarefa = await _subtarefaService.FindDetails(id.GetValueOrDefault());
+            if (subtarefa == null) return NotFound();
+            return View(subtarefa);
+        }
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (_context.Subtarefa == null)
-            {
-                return Problem("Entity set 'CursoInicianteContexto.Subtarefa'  is null.");
-            }
-
-            var subtarefa = await _context.Subtarefa.FindAsync(id);
-            if (subtarefa != null)
-            {
-                _context.Subtarefa.Remove(subtarefa);
-            }
-
-            await _context.SaveChangesAsync();
+            var subtarefa = await _subtarefaService.FindDetails(id);
+            await _subtarefaService.Delete(id);
             return RedirectToAction("Details", "Tarefa", new { Id = subtarefa.TarefaId });
         }
 
-        private bool SubtarefaExists(Guid id)
-        {
-            return (_context.Subtarefa?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
 
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Concluir(Guid id)
+        public async Task<IActionResult> Finish(Guid id)
         {
-            var entidade = await _context.Subtarefa.FindAsync(id);
-
-            if (entidade == null)
-                return RedirectToAction("Index", "Pessoa");
-
-            entidade.RealizadoEm = DateTime.Now;
-
-            await _context.SaveChangesAsync();
-
+            await _subtarefaService.Finish(id);
             return RedirectToAction("Details", new { id });
         }
     }

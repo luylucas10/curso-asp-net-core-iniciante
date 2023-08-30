@@ -34,7 +34,7 @@ namespace CursoInicianteMvc.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(PessoaCadastroViewModel pessoa)
+        public async Task<IActionResult> Create(PessoaCadastrarViewModel pessoa)
         {
             if (!ModelState.IsValid) return View(pessoa);
             var id = await _pessoaService.Create(pessoa);

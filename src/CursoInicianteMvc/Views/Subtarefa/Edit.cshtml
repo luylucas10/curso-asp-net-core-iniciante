@@ -1,19 +1,17 @@
 @model CursoInicianteMvc.Models.SubtarefaEditarViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Editar Subtarefa";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
-}
+@section Scripts {@{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }}
 
 <div class="row">
     <div class="col-12">
         <div class="card">
             <form asp-action="Edit" method="post">
-                <div class="card-header py-3">
+                <div class="card-header pt-3">
                     <div class="card-title">
                         <h4>Editar Sub-Tarefa</h4>
                     </div>
@@ -22,12 +20,11 @@
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <input type="hidden" asp-for="@Model.Id">
                     <input type="hidden" asp-for="@Model.TarefaId">
-                    <div class="row">
+                    <div class="row gap-3">
                         <div class="col-12">
                             <div class="form-group">
                                 <label asp-for="TarefaId" class="form-label"></label>
-                                <select class="form-control" asp-items="ViewBag.TarefaId" disabled="disabled"></select>
-                                <span asp-validation-for="TarefaId" class="text-danger"></span>
+                                <textarea class="form-control" asp-for="TarefaDescricao" readonly="readonly" disabled="disabled"></textarea>
                             </div>
                         </div>
                         <div class="col-12">

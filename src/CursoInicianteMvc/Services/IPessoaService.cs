@@ -9,7 +9,7 @@ public interface IPessoaService
 {
     Task<PessoaEditarViewModel?> Find(Guid id);
     Task<Tuple<int, IEnumerable>> Search(Filter filtro);
-    Task<Guid> Create(PessoaCadastroViewModel pessoa);
+    Task<Guid> Create(PessoaCadastrarViewModel pessoa);
     Task Edit(PessoaEditarViewModel pessoa);
     Task Delete(Guid id);
 }
@@ -30,7 +30,7 @@ public class PessoaService : IPessoaService
     public Task<Tuple<int, IEnumerable>> Search(Filter filtro) =>
         _repository.Search(filtro);
 
-    public async Task<Guid> Create(PessoaCadastroViewModel pessoa)
+    public async Task<Guid> Create(PessoaCadastrarViewModel pessoa)
     {
         var pessoaEntidade = new Pessoa
         {
