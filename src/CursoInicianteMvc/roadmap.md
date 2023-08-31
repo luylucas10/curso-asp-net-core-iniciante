@@ -1,0 +1,31 @@
+﻿# Tópicos para ensinar
+- estrutura e organização do mvc:
+  - o que é mvc?
+  - o que é model?;
+  - o que é view?;
+  - o que é controller?
+- o que é a program.cs:
+  - configurações, services, middlewares, portas, ambientes;
+- o que é o appsettings?
+- o que é o launch settings?
+- injeção de dependência:
+  - pra que serve?
+  - como usar?
+- controllers, rotas, parâmetros;
+- views e partial views;
+- wwwroot
+- entity framework com sql server;
+  - definição das entidades e fluent api;
+  - migrations;
+- scaffold crud de pessoa;
+- scaffold crud de tarefa;
+- scaffold crud de subtarefas;
+- bootstrap 5;
+- bootstrap-table/ajax;
+- linq;
+- async;
+- services, repositories e view models;
+- aplicação de template html;
+- estrutura e organização de uma API;
+- criar api de pessoa;
+- postman;

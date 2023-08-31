@@ -2,187 +2,25 @@
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-    </ItemGroup>
-
 
     <ItemGroup>
-      <PackageReference Include="EFCore.NamingConventions" Version="7.0.2" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+        <PackageReference Include="AspNetCore.RouteAnalyzer" Version="0.5.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9"/>
     </ItemGroup>
-
-
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Views\Pessoa\Create.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Pessoa\Delete.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Pessoa\Details.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Pessoa\Edit.cshtml" />
-      <_ContentIncludedByDefault Remove="Views\Pessoa\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\LICENSE" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\material-dashboard.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\material-dashboard.css.map" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\material-dashboard.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\nucleo-icons.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\css\nucleo-svg.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\apple-icon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\bg-pricing.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\bg-smart-home-1.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\bg-smart-home-2.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\bruce-mars.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\down-arrow-dark.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\down-arrow-white.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\down-arrow.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\drake.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\favicon.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\home-decor-1.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\home-decor-2.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\home-decor-3.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\icons\flags\AU.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\icons\flags\BR.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\icons\flags\DE.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\icons\flags\GB.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\icons\flags\US.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\chat.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\danger-chat-ill.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\dark-lock-ill.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\error-404.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\error-500.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\illustration-lock.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\illustration-reset.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\illustration-signin.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\illustration-signup.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\illustration-verification.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\lock.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\pattern-tree.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\illustrations\rocket-white.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\ivana-square.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\ivana-squares.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\ivancik.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\kal-visuals-square.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logo-ct-dark.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logo-ct.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\gray-logos\logo-coinbase.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\gray-logos\logo-nasa.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\gray-logos\logo-netflix.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\gray-logos\logo-pinterest.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\gray-logos\logo-spotify.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\gray-logos\logo-vodafone.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\mastercard.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\logos\visa.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\marie.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\meeting.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\office-dark.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\product-12.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-1-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-11.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-2-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-3-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-4-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-5-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-6-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-7-min.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-details-1.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-details-2.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-details-3.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-details-4.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\products\product-details-5.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\shapes\pattern-lines.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\shapes\waves-white.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\bootstrap.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\creative-tim.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\devto.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\github.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\google-webdev.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\icon-bulb.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\icon-sun-cloud.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-asana.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-atlassian.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-invision.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-jira.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-slack.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-spotify.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\small-logos\logo-xd.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\team-1.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\team-2.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\team-3.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\team-4.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\team-5.jpg" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\tesla-model-s.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\img\vr-bg.jpg" />
-    </ItemGroup>
-
-
-
-
-
-
-
-
 </Project>

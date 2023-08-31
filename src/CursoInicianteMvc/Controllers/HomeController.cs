@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Data;
 using Microsoft.AspNetCore.Mvc;
 using CursoInicianteMvc.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace CursoInicianteMvc.Controllers;
 

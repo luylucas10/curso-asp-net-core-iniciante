@@ -1,4 +1,6 @@
-﻿namespace CursoInicianteMvc.Models;
+﻿using System;
+
+namespace CursoInicianteMvc.Models;
 
 public class Filter
 {

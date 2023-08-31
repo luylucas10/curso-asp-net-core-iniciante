@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +14,7 @@ public class SubtarefaRepository : ISubtarefaRepository
     public SubtarefaRepository(CursoInicianteContexto contexto) =>
         _contexto = contexto;
 
-    public async Task<Subtarefa?> Find(Guid id) =>
+    public async Task<Subtarefa> Find(Guid id) =>
         await _contexto
             .Subtarefa
             .Include(x => x.Tarefa)

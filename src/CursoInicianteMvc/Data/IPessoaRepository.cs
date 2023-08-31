@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Models;
 
 namespace CursoInicianteMvc.Data;
 
 public interface IPessoaRepository
 {
-    Task<Pessoa?> Find(Guid id);
+    Task<Pessoa> Find(Guid id);
     Task<Tuple<int, IEnumerable>> Search(Filter filtro);
     Task Create(Pessoa pessoa);
     Task Edit(Pessoa? pessoa);

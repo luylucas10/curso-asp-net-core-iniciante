@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Models;
 
 namespace CursoInicianteMvc.Services;
 
 public interface ITarefaService
 {
-    Task<TarefaCadastrarViewModel?> FindCreate(Guid pessoaId);
+    Task<TarefaCadastrarViewModel> FindCreate(Guid pessoaId);
     Task<TarefaEditarViewModel?> FindEdit(Guid id);
     Task<TarefaDetalharViewModel?> FindDetails(Guid id);
     Task<Tuple<int, IEnumerable>> Search(TarefaFilter filtro);

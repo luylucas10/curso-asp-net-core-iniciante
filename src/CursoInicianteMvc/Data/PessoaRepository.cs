@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +14,7 @@ public class PessoaRepository : IPessoaRepository
     public PessoaRepository(CursoInicianteContexto contexto) =>
         _contexto = contexto;
 
-    public async Task<Pessoa?> Find(Guid id) =>
+    public async Task<Pessoa> Find(Guid id) =>
         await _contexto.Pessoa.FindAsync(id);
 
     public async Task<Tuple<int, IEnumerable>> Search(Filter filtro)

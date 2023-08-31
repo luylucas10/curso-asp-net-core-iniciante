@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Data;
 using CursoInicianteMvc.Models;
 
@@ -15,7 +17,7 @@ public class TarefaService : ITarefaService
         _pessoaRepository = pessoaRepository;
     }
 
-    public async Task<TarefaCadastrarViewModel?> FindCreate(Guid pessoaId)
+    public async Task<TarefaCadastrarViewModel> FindCreate(Guid pessoaId)
     {
         var pessoa = await _pessoaRepository.Find(pessoaId);
         return new TarefaCadastrarViewModel(pessoa);

@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Threading.Tasks;
 using CursoInicianteMvc.Data;
 using CursoInicianteMvc.Models;
 
@@ -11,7 +13,7 @@ public class PessoaService : IPessoaService
     public PessoaService(IPessoaRepository repository) =>
         _repository = repository;
 
-    public async Task<PessoaEditarViewModel?> Find(Guid id)
+    public async Task<PessoaEditarViewModel> Find(Guid id)
     {
         var pessoa = await _repository.Find(id);
         return pessoa == null ? null : new PessoaEditarViewModel(pessoa);

@@ -1,4 +1,7 @@
-﻿namespace CursoInicianteMvc.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace CursoInicianteMvc.Models;
 
 public class Pessoa
 {
