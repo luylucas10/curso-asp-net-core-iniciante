@@ -6,7 +6,7 @@ using CursoInicianteMvc.Services;
 
 namespace CursoInicianteMvc.Controllers
 {
-    public class PessoaController : Controller
+    public class PessoaController : CursoControllerBase
     {
         private readonly IPessoaService _pessoaService;
 
@@ -27,7 +27,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Details(Guid? id)
         {
             var pessoa = await _pessoaService.Find(id.GetValueOrDefault());
-            if (pessoa == null) return NotFound();
+            if (pessoa == null) return RedirectToAction("NaoEncontrado");
             return View(pessoa);
         }
 
@@ -47,7 +47,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Edit(Guid? id)
         {
             var pessoa = await _pessoaService.Find(id.GetValueOrDefault());
-            if (pessoa == null) return NotFound();
+            if (pessoa == null) return RedirectToAction("NaoEncontrado");
             return View(pessoa);
         }
 
@@ -64,7 +64,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Delete(Guid? id)
         {
             var pessoa = await _pessoaService.Find(id.GetValueOrDefault());
-            if (pessoa == null) return NotFound();
+            if (pessoa == null) return RedirectToAction("NaoEncontrado");
             return View(pessoa);
         }
 

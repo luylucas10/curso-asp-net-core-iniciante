@@ -6,7 +6,7 @@ using CursoInicianteMvc.Services;
 
 namespace CursoInicianteMvc.Controllers
 {
-    public class SubtarefaController : Controller
+    public class SubtarefaController : CursoControllerBase
     {
         private readonly ISubtarefaService _subtarefaService;
 
@@ -24,7 +24,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Details(Guid? id)
         {
             var subtarefa = await _subtarefaService.FindDetails(id.GetValueOrDefault());
-            if (subtarefa == null) return NotFound();
+            if (subtarefa == null) return NaoEncontrado();
             return View(subtarefa);
         }
 
@@ -45,7 +45,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Edit(Guid? id)
         {
             var subtarefa = await _subtarefaService.FindEdit(id.GetValueOrDefault());
-            if (subtarefa == null) return NotFound();
+            if (subtarefa == null) return NaoEncontrado();
             return View(subtarefa);
         }
 
@@ -62,7 +62,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Delete(Guid? id)
         {
             var subtarefa = await _subtarefaService.FindDetails(id.GetValueOrDefault());
-            if (subtarefa == null) return NotFound();
+            if (subtarefa == null) return NaoEncontrado();
             return View(subtarefa);
         }
 

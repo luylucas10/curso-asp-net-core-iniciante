@@ -6,7 +6,7 @@ using CursoInicianteMvc.Services;
 
 namespace CursoInicianteMvc.Controllers
 {
-    public class TarefaController : Controller
+    public class TarefaController : CursoControllerBase
     {
         private readonly ITarefaService _tarefaService;
 
@@ -24,7 +24,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Details(Guid? id)
         {
             var tarefa = await _tarefaService.FindDetails(id.GetValueOrDefault());
-            if (tarefa == null) return NotFound();
+            if (tarefa == null) return NaoEncontrado();
             return View(tarefa);
         }
 
@@ -33,7 +33,7 @@ namespace CursoInicianteMvc.Controllers
         {
             var tarefa = await _tarefaService.FindCreate(pessoaId);
             return tarefa == null
-                ? NotFound()
+                ? NaoEncontrado()
                 : View(tarefa);
         }
 
@@ -55,7 +55,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Edit(Guid? id)
         {
             var tarefa = await _tarefaService.FindEdit(id.GetValueOrDefault());
-            if (tarefa == null) return NotFound();
+            if (tarefa == null) return NaoEncontrado();
             return View(tarefa);
         }
 
@@ -86,7 +86,7 @@ namespace CursoInicianteMvc.Controllers
         public async Task<IActionResult> Delete(Guid? id)
         {
             var tarefa = await _tarefaService.FindDetails(id.GetValueOrDefault());
-            if (tarefa == null) return NotFound();
+            if (tarefa == null) return NaoEncontrado();
             return View(tarefa);
         }
 
